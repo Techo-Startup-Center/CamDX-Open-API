@@ -291,6 +291,12 @@ components:
                   JSON parse error: Unrecognized field "issuedDated" (class kh.gov.camdx.camdigikey.openapi.app.dto.UserInfoRequestDto), not marked as ignorable; nested exception is com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "issuedDated" (class kh.gov.camdx.camdigikey.openapi.app.dto.UserInfoRequestDto), not marked as ignorable (9 known properties: "gender", "expiredDate", "idNumber", "dob", "firstNameKh", "issuedDate", "lastNameEn", "lastNameKh", "firstNameEn"])
                    at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 173] (through reference chain: kh.gov.camdx.camdigikey.openapi.app.dto.UserInfoRequestDto["issuedDated"])
                 data: null
+          examples:
+            example-1:
+              value:
+                error: -1
+                message: Error message from server
+                data: null
   schemas:
     BaseResponse:
       type: object
