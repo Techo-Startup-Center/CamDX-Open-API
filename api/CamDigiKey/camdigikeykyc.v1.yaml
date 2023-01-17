@@ -64,6 +64,7 @@ components:
       schema:
         type: string
         example: CAMBODIA/GOV/CAMDX-20201222/OBR
+        default: CAMBODIA/GOV/CAMDX-20201222/OBR
       description: X-Road-Client Request Header
     MemberCode:
       name: member_code
@@ -72,6 +73,7 @@ components:
       schema:
         type: string
         example: CAMDX-20201222
+        default: CAMDX-20201222
       description: CamDigiKey's Member Code
   responses:
     info:
