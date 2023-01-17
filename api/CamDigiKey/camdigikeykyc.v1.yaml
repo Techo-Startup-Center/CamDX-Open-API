@@ -75,7 +75,7 @@ components:
       description: CamDigiKey's Member Code
   responses:
     info:
-      description: Example response
+      description: Successful Response
       content:
         application/json:
           schema:
@@ -100,7 +100,7 @@ components:
             type: object
             properties: {}
     ocrIdCard:
-      description: Example response
+      description: Successful Response
       content:
         application/json:
           schema:
@@ -130,7 +130,7 @@ components:
                   MRZ2: '123456M2509127KHM<<<<<<<<<<<4 '
                   MRZ3: 'HENG<<SAMOL<<<<<<<<<<<<<<<<<<<< '
     infoFace:
-      description: Example response
+      description: Successful Response
       content:
         application/json:
           schema:
@@ -159,7 +159,7 @@ components:
                       - incorrectFieldName
                   faceMoiScore: 0.5696822
     infoFaceIdCard:
-      description: Example response
+      description: Successful Response
       content:
         application/json:
           schema:
@@ -192,7 +192,7 @@ components:
                   faceDocumentScore: 0.9981736
                   faceMoiScore: 0.5696822
     infoIdCardLiveness:
-      description: Example response
+      description: Successful Response
       content:
         application/json:
           schema:
@@ -227,6 +227,70 @@ components:
                       - incorrectFieldName
                   faceDocumentScore: 0.9981736
                   faceMoiScore: 0.5696822
+    error502:
+      description: Error with status code 502
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: integer
+              message:
+                type: string
+              data:
+                type: 'null'
+            x-examples:
+              example-1:
+                error: 502
+                message: There is problem getting user info from MOI.
+                data: null
+          examples:
+            example-1:
+              value:
+                error: 502
+                message: There is problem getting user info from MOI.
+                data: null
+    error500:
+      description: Error with status code 500 Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: integer
+              message:
+                type: string
+            x-examples:
+              example-1:
+                error: 500
+                message: Request failed with status code 500
+          examples:
+            example-1:
+              value:
+                error: 500
+                message: Request failed with status code 500
+    error400:
+      description: Error with status code 400 Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: integer
+              message:
+                type: string
+              data:
+                type: 'null'
+            x-examples:
+              example-1:
+                error: -1
+                message: |-
+                  JSON parse error: Unrecognized field "issuedDated" (class kh.gov.camdx.camdigikey.openapi.app.dto.UserInfoRequestDto), not marked as ignorable; nested exception is com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "issuedDated" (class kh.gov.camdx.camdigikey.openapi.app.dto.UserInfoRequestDto), not marked as ignorable (9 known properties: "gender", "expiredDate", "idNumber", "dob", "firstNameKh", "issuedDate", "lastNameEn", "lastNameKh", "firstNameEn"])
+                   at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream); line: 1, column: 173] (through reference chain: kh.gov.camdx.camdigikey.openapi.app.dto.UserInfoRequestDto["issuedDated"])
+                data: null
   schemas:
     BaseResponse:
       type: object
@@ -494,6 +558,12 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/info'
+        '400':
+          $ref: '#/components/responses/error400'
+        '500':
+          $ref: '#/components/responses/error500'
+        '502':
+          $ref: '#/components/responses/error502'
       tags:
         - KYC Verification API
     parameters:
@@ -504,6 +574,12 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/infoFace'
+        '400':
+          $ref: '#/components/responses/error400'
+        '500':
+          $ref: '#/components/responses/error500'
+        '502':
+          $ref: '#/components/responses/error502'
       operationId: verifyInfoFace
       description: |-
         Verification between submitted user information include face image with MOI information
@@ -563,6 +639,12 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/infoFaceIdCard'
+        '400':
+          $ref: '#/components/responses/error400'
+        '500':
+          $ref: '#/components/responses/error500'
+        '502':
+          $ref: '#/components/responses/error502'
       operationId: verifyInfoFaceIdCard
       description: |-
         - Verification with submitted document, face verification with retrieved image from MOI
@@ -588,6 +670,12 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/infoIdCardLiveness'
+        '400':
+          $ref: '#/components/responses/error400'
+        '500':
+          $ref: '#/components/responses/error500'
+        '502':
+          $ref: '#/components/responses/error502'
       description: |-
         - Liveness verification check, face verification with submitted document, face verification with retrieved image from MOI 
         - Verification of submitted information with MOI information
@@ -625,6 +713,12 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/ocrIdCard'
+        '400':
+          $ref: '#/components/responses/error400'
+        '500':
+          $ref: '#/components/responses/error500'
+        '502':
+          $ref: '#/components/responses/error502'
       operationId: readOcrIDCard
       description: |-
         OCR extracts user's information from submitted identification image
