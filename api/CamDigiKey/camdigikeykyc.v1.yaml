@@ -739,12 +739,6 @@ paths:
       tags:
         - KYC Verification API
     parameters:
-      - name: member_code
-        in: path
-        required: true
-        schema:
-          type: string
-          example: CAMDX-20201222
-        description: CamDigiKey's Member Code
+      - $ref: '#/components/parameters/MemberCode'
 tags:
   - name: KYC Verification API
