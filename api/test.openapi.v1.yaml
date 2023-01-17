@@ -1,0 +1,28 @@
+openapi: 3.1.0
+x-stoplight:
+  id: c4xha5srw1qaj
+info:
+  title: CamDX Address APIs
+  version: '1.0'
+  summary: Countries Address API
+servers:
+  - url: 'https://catalog-dev.camdx.gov.kh'
+    description: dev
+  - url: 'http://ss.camdx.gov.kh:8880'
+    description: prod
+paths:
+  /r1/CAMBODIA/GOV/CAMDX-20201222/MOC/getAddressCountries:
+    get:
+      summary: CamDX Address
+      tags: []
+      responses: {}
+      operationId: get-r1-CAMBODIA-GOV-CAMDX-20201222-MOC-getAddressCountries
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-20201222/NSPC_SYSTEM
+          in: header
+          name: X-Road-Client
+          required: true
+components:
+  schemas: {}
