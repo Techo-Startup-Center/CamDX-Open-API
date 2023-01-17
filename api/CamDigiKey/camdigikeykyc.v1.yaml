@@ -443,12 +443,6 @@ components:
       x-stoplight:
         id: n0t9aueyu17k5
       type: object
-      properties:
-        userInfo:
-          $ref: '#/components/schemas/UserInfo'
-        faceImage:
-          type: string
-          example: base_64_content
       examples:
         - userInfo:
             idNumber: '011196245'
@@ -460,7 +454,13 @@ components:
             dob: '2000-05-06'
             issuedDate: '2016-03-23'
             expiredDate: '2026-03-22'
-          faceImage: base_64_content
+          faceImg: base_64_content
+      properties:
+        userInfo:
+          $ref: '#/components/schemas/UserInfo'
+        faceImg:
+          type: string
+          example: base_64_content
     UserInfoFaceIdCard:
       title: 'User Info, ID Card and User Face'
       x-stoplight:
@@ -482,7 +482,7 @@ components:
       properties:
         userInfo:
           $ref: '#/components/schemas/UserInfo'
-        faceImage:
+        faceImg:
           type: string
           example: base_64_content
         idImage:
