@@ -1,0 +1,754 @@
+openapi: 3.1.0
+info:
+  title: IRC
+  version: 1.0.0
+  description: "## \U0001F4AB Overview\n\nThis document is about data exchange and integration between Insurance Agent Registration(IAR) with Online Business Registration (OBR). Both systems will using RESTful web service to exchange data in json format.\n\nInorder to get data from IAR system, OBR must request to IAR with payload format, which is set by IAR.\nIAR provide only pull mechanism. Once received data from IAR, OBR can display information realtime to user or save into their system base on actual usecase. Authentication and authorization are needed during transmit data between systems. Also data is securely exchange throught CamDx Platform. \n\n\n### \U0001F9F0 Authentication\nFor security reason, authentication mechanism is significant while exchange data via web service between Consumer’s system and IAR system. Comsumer’s system must attach CamDigiKey Organization Access Token in the HTTP request header during request to Consumer’s endpoint."
+  contact:
+    name: CamDX Team
+    email: camdx@mef.gov.kh
+    url: 'https://www.camdx.gov.kh'
+  license:
+    name: MIT
+    url: 'https://spdx.org/licenses/MIT'
+  termsOfService: 'https://www.camdx.gov.kh/#contact'
+  summary: Insurance Regulator of Cambodia's Open API
+servers:
+  - url: 'https://catalog-dev.camdx.gov.kh'
+    description: Development
+  - url: 'https://ss.camdx.gov.kh'
+    description: Production
+components:
+  securitySchemes:
+    CamDigiKey-JWT:
+      type: http
+      scheme: bearer
+      description: Organization level’s token which generate from CamDigiKey.
+tags:
+  - name: statistics
+    description: Number of statistic
+  - name: applications
+    description: Everything about your application
+paths:
+  /r1/CAMBODIA/GOV/CAMDX-20201222/ICR/open-api/v1/statistic:
+    get:
+      tags:
+        - statistics
+      summary: Get application statistic
+      operationId: getApplicationStatistic
+      parameters:
+        - schema:
+            type: string
+            default: '2020-09-01'
+          in: query
+          name: start_date
+          required: true
+          description: 'License last modified date (start from), (“yyyy-MM-dd”)'
+        - schema:
+            type: string
+            default: '2022-12-31'
+          in: query
+          description: 'License last modified date (to), (“yyyy-MM-dd”)'
+          name: end_date
+          required: true
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-000002/OBR
+          in: header
+          name: X-Road-Client
+          description: X-Road Client Header
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      number_of_approved: 0
+                      number_of_draft: 0
+                      number_of_expired: 0
+                      number_of_rejected: 0
+                      number_of_returned: 0
+                      number_of_reviewing: 0
+                      number_of_submitted: 0
+                      total_number_of_all_license: 0
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    status: 1
+                    message: Success
+                    data:
+                      - _id:
+                          _id: 62708acf89648886fecb40c5
+                          country_code: KH
+                          nationality_kh: ខ្មែរ
+                          nationality_en: Cambodian
+                          gdt_id: 30
+                          name_en: Cambodia
+                          name_kh: កម្ពុជា
+                          createdAt: '2022-05-03T01:52:15.219Z'
+                          updatedAt: '2022-05-03T01:52:15.219Z'
+                          __v: 0
+                        total: 110
+                        total_male: 69
+                        total_female: 41
+                properties:
+                  code:
+                    type: integer
+                    description: |
+                      Response code: 1: Successfully, 0: Not found, -1: Internal Server Error
+                  message:
+                    type: string
+                    description: 'Response message  '
+                  data:
+                    type: object
+                    description: Return list of company statistic
+                    properties:
+                      number_of_approved:
+                        type: integer
+                        description: Number of approved application
+                      number_of_expired:
+                        type: integer
+                        description: Number of expired application
+                      number_of_rejected:
+                        type: integer
+                        description: Number of rejected application
+                      number_of_reviewing:
+                        type: integer
+                        description: Number of reviewing application
+                      number_of_submitted:
+                        type: integer
+                        description: Number of submitted application
+                      total_number_of_all_license:
+                        type: integer
+                        description: Total number of all application
+          headers: {}
+      description: Get application statistic
+      security:
+        - CamDigiKey-JWT: []
+      x-internal: false
+    parameters: []
+  /r1/CAMBODIA/GOV/CAMDX-20201222/ICR/open-api/v1/licenses:
+    get:
+      tags:
+        - applications
+      summary: Get all applications
+      operationId: getAllApplications
+      requestBody:
+        content: {}
+      parameters:
+        - name: id
+          in: query
+          schema:
+            type: string
+          description: Unique UUID
+        - name: code
+          in: query
+          schema:
+            type: integer
+          example: 1
+          description: Agent Code
+        - name: id_card_number
+          in: query
+          schema:
+            type: integer
+          example: 20
+          description: ID Card Number
+        - schema:
+            type: integer
+          in: query
+          name: page
+          description: Current page
+        - schema:
+            type: integer
+          in: query
+          name: size
+          description: Number of records
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-000002/OBR
+          in: header
+          name: X-Road-Client
+          description: X-Road Client Header
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    status: 1
+                    message: Success
+                    data:
+                      applications:
+                        - _id: 62ba6269c645a5316b6d8689
+                          __v: 0
+                          address:
+                            country_code: KH
+                            province_code: '03'
+                            district_code: '0303'
+                            commune_code: '030304'
+                            village_code: '03030402'
+                            house_number: '44'
+                            street_number: '34'
+                            postcode: null
+                            foreign_address: null
+                          applicant_code: '023445556'
+                          approved_by: null
+                          approved_date: null
+                          cert_id: null
+                          close_date: null
+                          company_name_en: SDFSDFSDF
+                          company_name_kh: សដថដថ
+                          company_single_id: ''
+                          company_type_code: INCORP
+                          contact:
+                            mobile_phone: +855 98 765 444
+                            email: test@gmail.com
+                            website: sdfsdf
+                            social_media: sdfsdfsdf
+                          createdAt: '2022-06-28T02:07:37.768Z'
+                          department: null
+                          director: 62d6911f3d4174498ab3742e
+                          documents:
+                            - _id: 62d6881c3d417453eeb36c2e
+                              key: condemnation_doc
+                              type: license
+                              original_name: company_legal_doc.pdf
+                          employees:
+                            - 62d6911f3d41743817b37434
+                          expiry_date: null
+                          firstSubmittedAt: null
+                          individuals:
+                            - 62d6911f3d41742f35b37436
+                          is_accept_info: true
+                          is_active: true
+                          is_branch: false
+                          is_moc_data: false
+                          is_out_of_punishment: true
+                          is_re_registration: false
+                          is_valid_info: true
+                          legal_entities: []
+                          license_types:
+                            - license_type:
+                                _id: 60711460e0a80301a89cb39b
+                                description: នីតិវិធីស្នើសុំអាជ្ញាបណ្ណប្រកបអាជីវកម្មបញ្ចាំ
+                                name_en: Pawn Shop
+                                name_kh: អាជីវកម្មបញ្ចាំ
+                                createdAt: '2021-04-10T02:58:40.261Z'
+                                updatedAt: '2021-04-10T02:58:40.261Z'
+                                __v: 0
+                              capital_investment: 1200000000
+                          'no': null
+                          parent: 628deb9460d5fb87a8e16518
+                          registration_id: '2202040'
+                          stage: SUBMIT_VERIFY
+                          start_date: null
+                          status: DRAFT
+                          submittedAt: null
+                          suspend_date: null
+                          updatedAt: '2022-07-19T11:10:23.831Z'
+                          user: null
+                          version: 1
+                          company_type:
+                            _id: 606d6071abbd3701b4be0c3e
+                            code: INCORP
+                            desc_kh: ក្រុមហ៊ុនមូលធន
+                            desc_en: Limited Company
+                            createdAt: '2021-04-07T07:34:09.727Z'
+                            updatedAt: '2021-04-07T07:34:09.727Z'
+                            __v: 0
+                      pagination:
+                        page: 1
+                        limit: 10
+                        total: 293
+                properties:
+                  status:
+                    type: integer
+                    description: 'Response code: 1: Successfully, 0: Not found, -1: Internal Server Error'
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Unique UUID
+                      code:
+                        type: string
+                        description: Registration Number
+                      name_kh:
+                        type: string
+                        description: Agent‘s name in English
+                      name_en:
+                        type: string
+                        description: Agent’s name in Khmer
+                      status:
+                        type: string
+                        description: Check table status Mapping
+                      created_at:
+                        type: string
+                        description: Submitted Date
+                      valid_from:
+                        type: string
+                        description: Decision Date
+                      "\texpire_at":
+                        type: string
+                        description: Expired Date
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                        description: Current page
+                      size:
+                        type: integer
+                        description: Number of records
+                      total_counts:
+                        type: integer
+                        description: Total number of records
+                      total_page:
+                        type: integer
+                        description: Total number of pages
+              examples:
+                example-1:
+                  value:
+                    status: 0
+                    message: string
+                    data:
+                      single_id: string
+                      company_name_en: string
+                      company_name_kh: string
+                      license_type:
+                        code: string
+                        name_en: string
+                        name_kh: string
+                      license_status: string
+                      request_no: string
+                      submitted_date: string
+                      decision_date: string
+                      expired_date: string
+                    pagination:
+                      page: 0
+                      size: 0
+                      total_counts: 0
+                      total_page: 0
+      security:
+        - CamDigiKey-JWT: []
+      description: Get all applications
+    parameters: []
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/ICR/open-api/v1/licenses/{registration_no}/timeline':
+    get:
+      tags:
+        - applications
+      summary: Get applications timeline (histories)
+      operationId: getApplicationsTimeline
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-000002/OBR
+          in: header
+          name: X-Road-Client
+          description: X-Road Client Header
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      single_id: string
+                      company_name_en: string
+                      company_name_kh: string
+                      licenses:
+                        - license_type:
+                            code: string
+                          request_no: string
+                          services:
+                            - code: string
+                          status: string
+                properties:
+                  code:
+                    type: integer
+                    description: |-
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Unique UUID
+                      code:
+                        type: string
+                        description: Registration Number
+                      name_kh:
+                        type: string
+                        description: Agent‘s name in English
+                      name_en:
+                        type: string
+                        description: Agent’s name in Khmer
+                      timelines:
+                        description: Request Number
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            title_en:
+                              type: string
+                              description: Title in English
+                            title_kh:
+                              type: string
+                              description: Title in Khmer
+                            description_en:
+                              type: string
+                              description: Description in English
+                            description_kh:
+                              type: string
+                              description: Description in Khmer
+                            event_date_time:
+                              type: string
+                              description: Date and time when event happened
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      single_id: string
+                      company_name_en: string
+                      company_name_kh: string
+                      request_no: string
+                      timelines:
+                        - title_en: string
+                          title_kh: string
+                          description_en: string
+                          description_kh: string
+                          event_date_time: string
+      description: Get applications timeline (histories)
+      security:
+        - CamDigiKey-JWT: []
+    parameters:
+      - schema:
+          type: string
+          default: '1000025156'
+        name: registration_no
+        in: path
+        description: Registration Number
+        required: true
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/ICR/open-api/v1/licenses/details/{registration_no}/info':
+    get:
+      tags:
+        - applications
+      summary: Get application detail
+      operationId: getApplicationDetail
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-000002/OBR
+          in: header
+          name: X-Road-Client
+          description: X-Road Client Header
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples: {}
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: |
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        description: Unique UUID
+                      code:
+                        type: string
+                        description: Registration Number
+                      name_kh:
+                        type: string
+                        description: Agent‘s name in Khmer
+                      name_en:
+                        type: string
+                        description: Agent’s name in English
+                      pob:
+                        type: object
+                        properties:
+                          is_manual_input:
+                            type: boolean
+                          manual_address:
+                            type: string
+                            description: Address
+                          province:
+                            type: object
+                            code: string
+                            name_en: string
+                            name_kh: string
+                            properties:
+                              code:
+                                type: string
+                                description: Province’s code
+                              latin_name:
+                                type: string
+                                description: Province’s name in English
+                              name:
+                                type: string
+                                description: Province’s name in Khmer
+                          district:
+                            type: object
+                            code: string
+                            name_en: string
+                            name_kh: string
+                            properties:
+                              code:
+                                type: string
+                                description: District’s code
+                              latin_name:
+                                type: string
+                                description: District’s name in English
+                              name:
+                                type: string
+                                description: District’s name in Khmer
+                          commune:
+                            type: object
+                            code: string
+                            name_en: string
+                            name_kh: string
+                            properties:
+                              code:
+                                type: string
+                                description: Commune’s code
+                              latin_name:
+                                type: string
+                                description: Commune’s name in English
+                              name:
+                                type: string
+                                description: Commune’s name in Khmer
+                          village:
+                            type: object
+                            code: string
+                            name_en: string
+                            name_kh: string
+                            properties:
+                              code:
+                                type: string
+                                description: Village’s code
+                              latin_name:
+                                type: string
+                                description: Village’s name in English
+                              name:
+                                type: string
+                                description: Village’s name in Khmer
+                      current_address:
+                        type: object
+                        description: Current Address
+                        properties:
+                          is_manual_input:
+                            type: boolean
+                          manual_address:
+                            type: string
+                            description: Address
+                          province:
+                            type: object
+                            code: string
+                            name_en: string
+                            name_kh: string
+                            properties:
+                              code:
+                                type: string
+                                description: Province’s code
+                              latin_name:
+                                type: string
+                                description: Province’s name in English
+                              name:
+                                type: string
+                                description: Province’s name in Khmer
+                          district:
+                            type: object
+                            code: string
+                            name_en: string
+                            name_kh: string
+                            properties:
+                              code:
+                                type: string
+                                description: District’s code
+                              latin_name:
+                                type: string
+                                description: District’s name in English
+                              name:
+                                type: string
+                                description: District’s name in Khmer
+                          commune:
+                            type: object
+                            code: string
+                            name_en: string
+                            name_kh: string
+                            properties:
+                              code:
+                                type: string
+                                description: Commune’s code
+                              latin_name:
+                                type: string
+                                description: Commune’s name in English
+                              name:
+                                type: string
+                                description: Commune’s name in Khmer
+                          village:
+                            type: object
+                            code: string
+                            name_en: string
+                            name_kh: string
+                            properties:
+                              code:
+                                type: string
+                                description: Village’s code
+                              latin_name:
+                                type: string
+                                description: Village’s name in English
+                              name:
+                                type: string
+                                description: Village’s name in Khmer
+                          house_number:
+                            type: string
+                            description: House number
+                          street_name:
+                            type: string
+                            description: Street number
+                          supporting_document:
+                            type: object
+                            properties:
+                              file_url:
+                                type: string
+                                description: Document file Url
+                              size:
+                                type: string
+                                description: Document file size - Bytes
+                              file_name:
+                                type: string
+                                description: Document file name
+                      marital_status:
+                        type: string
+                        description: Marital Status
+                      eduction_experience:
+                        type: object
+                        description: Education experiences as insurance agent
+                      school:
+                        type: string
+                        description: Name of  school
+                      province:
+                        type: string
+                        description: Province/City
+                      graduation_date:
+                        type: string
+                        description: Date of graducation
+                      certificate_of_study:
+                        description: Date of graducation
+                        type: object
+                        properties:
+                          file_url:
+                            type: string
+                            description: Document file Url
+                          size:
+                            type: string
+                            description: Document file size - Bytes
+                          file_name:
+                            type: string
+                            description: Document file name
+                      working_experiences:
+                        type: array
+                        description: Working experiences as insurance agent
+                        items:
+                          type: object
+                          properties:
+                            company_name:
+                              type: string
+                              description: Name of company
+                            from_date:
+                              type: string
+                              description: Start working date
+                            to_date:
+                              type: string
+                              description: End working date
+                      company_certificate:
+                        description: Date of graducation
+                        type: object
+                        properties:
+                          file_url:
+                            type: string
+                            description: Document file Url
+                          size:
+                            type: string
+                            description: Document file size - Bytes
+                          file_name:
+                            type: string
+                            description: Document file name
+                      insurance_education:
+                        description: Insurance education information
+                        type: object
+                        properties:
+                          insurance_education_institution:
+                            type: string
+                            description: Insurance Education Institution
+                          graduation_date_of_insurance_education:
+                            type: string
+                            description: Graduation Date Of Insurance Education
+                          insurance_education_certificate:
+                            type: object
+                            properties:
+                              file_url:
+                                type: string
+                                description: Document file Url
+                              size:
+                                type: string
+                                description: Document file size - Bytes
+                              file_name:
+                                type: string
+                                description: Document file name
+                          conditions:
+                            type: object
+                          fraud_or_breach_of_trust:
+                            type: boolean
+                            description: Have you ever been convicted or are in court proceedings for fraud or breach of trust?
+                          convicted_of_a_crime:
+                            type: boolean
+                            description: Have you ever been convicted of a crime?
+      description: Get application detail
+    parameters:
+      - schema:
+          type: string
+          default: '00051039'
+        name: registration_no
+        in: path
+        required: true
+        description: Registration Number

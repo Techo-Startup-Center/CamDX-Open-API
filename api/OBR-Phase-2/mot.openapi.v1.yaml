@@ -1,0 +1,1407 @@
+openapi: 3.1.0
+info:
+  title: MOT
+  version: 1.0.0
+  description: "## \U0001F4AB Overview\n\nThis document is about data exchange and integration between Online Tourism License Registration (OTLR) with Online Business Registration (OBR). Both systems will using RESTful web service to exchange data in json format.\n\nInorder to get data from OTLR system, OBR must request to OTLR with payload format, which is set by OTLR.\nOTLR provide only pull mechanism. Once received data from OTLR, OBR can display information realtime to user or save into their system base on actual usecase. Authentication and authorization are needed during transmit data between systems. Also data is securely exchange throught CamDx Platform. \n\n\n\n### \U0001F9F0 Authentication\nFor security reason, authentication mechanism is significant while exchange data via web service between Consumer’s system and OTLR system. Comsumer’s system must attach CamDigiKey User/Organization Access Token in the HTTP request header during request to Consumer’s endpoint.\n\n\n### Code Mapping\n<table cellspacing=\"0\" cellpadding=\"0\" border=\"1\">\n  <tbody>\n    <tr>\n      <td>Code Type </td>\n      <td>Code </td>\n      <td>Khmer Definition </td>\n      <td> English Definition </td>\n      <td>Remarks </td>\n    </tr>\n    <tr>\n      <td rowspan=\"3\">\n        <p align=\"center\"> License Types\n      </td>\n      <td>ACCOMMODATION </td>\n      <td>សណ្ឋាគារ ឬសេវាស្នាក់នៅ </td>\n      <td> Accommondation </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>TRAVEL-AGENCY </td>\n      <td>ទីភ្នាក់ងារទេសចរណ៍ </td>\n      <td> Travel Agency </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>RESTAURANT </td>\n      <td>ភោជនីដ្ឋាន-អាហារដ្ឋាន </td>\n      <td> Restaurant </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td rowspan=\"7\">\n        <p align=\"center\"> Application Status\n      </td>\n      <td>DRAFT </td>\n      <td>ពង្រៀង </td>\n      <td> Draft </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>SUBMITTED </td>\n      <td>បានដាក់ស្នើ </td>\n      <td> Submitted </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>REVIEWING </td>\n      <td>កំពុងត្រួតពិនិត្យ </td>\n      <td> Reviewing </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>RETURNED </td>\n      <td>បញ្ជូនត្រឡប់ </td>\n      <td> Returned </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>REJECTED </td>\n      <td>ច្រានចោល </td>\n      <td> Rejected </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>APPROVED </td>\n      <td>អនុម័ត </td>\n      <td> Approved </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>EXPIRED </td>\n      <td>ផុតកំណត់ </td>\n      <td> Expired </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td rowspan=\"3\">\n        <p align=\"center\"> Payment Status\n      </td>\n      <td>PAYMENT_ACCEPTED </td>\n      <td>ការទូទាត់ប្រាក់បានទទួល </td>\n      <td> Payment accecpted </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>PAYMENT_EXPIRED </td>\n      <td>ការទូទាត់ប្រាក់បានផុតកំណត់ </td>\n      <td> Payment expired </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>PENDING_PAYMENT </td>\n      <td>ការទូទាត់ប្រាក់កំពុងស្ថិតនៅក្នុងរង់ចាំ </td>\n      <td> Payment is pending </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td rowspan=\"10\">\n        <p align=\"center\"> Service Type\n      </td>\n      <td>HOTEL </td>\n      <td>សណ្ឋាគារ </td>\n      <td> Hotel </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>HOSTEL </td>\n      <td>ផ្ទះភ្ញៀវ </td>\n      <td> Hostel </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>INBOUND </td>\n      <td>ការីទេសចរណ៍នាំភ្ញៀវចូលក្នុងកម្ពុជា </td>\n      <td> Travel Agency for Tours from Overseas to Cambodia </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>OUTBOUND </td>\n      <td>ការីទេសចរណ៍នាំភ្ញៀវចេញក្រៅកម្ពុជា </td>\n      <td> Travel Agency for Tours from Cambodia to Overseas </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>DOMESTIC </td>\n      <td>ការីទេសចរណ៍នាំភ្ញៀវកំសាន្តក្នុងកម្ពុជា </td>\n      <td> Travel Agency for Local Tours </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>TRA_AGENCY </td>\n      <td>ភ្នាក់ងារទេសចរណ៍ </td>\n      <td> Travel Agency </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>DISCO </td>\n      <td>រង្គសាលឌីស្កូតែក </td>\n      <td> Disco </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>KARAOKE </td>\n      <td>ខារ៉ាអូខេ </td>\n      <td> Karaoke </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>SPA </td>\n      <td>ម៉ាស្សាសុខភាព-ស្ប៉ា </td>\n      <td> Spa-Massage </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>BEER_GARDEN </td>\n      <td>បៀរហ្គាឌិន </td>\n      <td> Beer garden </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td rowspan=\"6\">\n        <p align=\"center\"> Hotel Ranking\n      </td>\n      <td>H_0_STAR </td>\n      <td>មិនជាប់ចំណាត់ថ្នាក់ </td>\n      <td> Rating no star </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>H_1_STAR </td>\n      <td>ចំណាត់ថ្នាក់ផ្ដាយ ១ </td>\n      <td> Rating star 1 </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>H_2_STAR </td>\n      <td>ចំណាត់ថ្នាក់ផ្ដាយ ២ </td>\n      <td> Rating star 2 </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>H_3_STAR </td>\n      <td>ចំណាត់ថ្នាក់ផ្ដាយ ៣ </td>\n      <td> Rating star 3 </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>H_4_STAR </td>\n      <td>ចំណាត់ថ្នាក់ផ្ដាយ ៤ </td>\n      <td> Rating star 4 </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>H_5_STAR </td>\n      <td>ចំណាត់ថ្នាក់ផ្ដាយ ៥ </td>\n      <td> Rating star 5 </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td rowspan=\"7\">\n        <p align=\"center\"> Hotel Size\n      </td>\n      <td>H_21_30 </td>\n      <td>ចាប់ពី ២១ បន្ទប់ដល់ ៣០ បន្ទប់ </td>\n      <td> From 21 rooms to 30 rooms </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>H_31_60 </td>\n      <td>ចាប់ពី ៣១ បន្ទប់ដល់ ៦០ បន្ទប់ </td>\n      <td> From 31 rooms to 60 rooms </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>H_61_100 </td>\n      <td>ចាប់ពី ៦១ បន្ទប់ដល់ ១០០ បន្ទប់ </td>\n      <td> From 61 rooms to 100 rooms </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>H_101_150 </td>\n      <td>ចាប់ពី ១០១ បន្ទប់ដល់ ១៥០ បន្ទប់ </td>\n      <td> From 101 rooms to 150 rooms </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>H_151_200 </td>\n      <td>ចាប់ពី ១៥១ បន្ទប់ដល់ ២០០ បន្ទប់ </td>\n      <td> From 151 rooms to 200 rooms </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>H_201_300 </td>\n      <td>ចាប់ពី ២០១ បន្ទប់ដល់ ៣០០ បន្ទប់ </td>\n      <td> From 201 rooms to 300 rooms </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>H_301_UP </td>\n      <td>ចាប់ពី ៣០១ បន្ទប់ឡើងទៅ </td>\n      <td> From 301 rooms and up </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td rowspan=\"3\">\n        <p align=\"center\"> Restaurant Size\n      </td>\n      <td>R_101_200 </td>\n      <td>ពី ១០១ ដល់ ២០០ នាក់ </td>\n      <td> From 101 guests to 200 guests </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>R_201_300 </td>\n      <td>ពី ២០១ ដល់ ៣០០ នាក់ </td>\n      <td> From 201 guests to 300 guests </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>R_301_UP </td>\n      <td>ពី ៣០១ នាក់ឡើងទៅ </td>\n      <td> From 301 guests and up </td>\n      <td></td>\n    </tr>\n  </tbody>\n</table>"
+  contact:
+    name: CamDX Team
+    email: camdx@mef.gov.kh
+    url: 'https://www.camdx.gov.kh'
+  license:
+    name: MIT
+    url: 'https://spdx.org/licenses/MIT'
+  termsOfService: 'https://www.camdx.gov.kh/#contact'
+  summary: Ministry of Tourism's Open API
+servers:
+  - url: 'https://catalog-dev.camdx.gov.kh'
+    description: Development
+  - url: 'https://ss.camdx.gov.kh'
+    description: Production
+components:
+  securitySchemes: {}
+tags:
+  - name: statistics
+    description: Number of statistic
+  - name: applications
+    description: Everything about your application
+paths:
+  /r1/CAMBODIA/GOV/CAMDX-20201222/MOT/obr-api/statistic:
+    get:
+      tags:
+        - statistics
+      summary: Get application statistic
+      operationId: getApplicationStatistic
+      parameters:
+        - schema:
+            type: integer
+          in: query
+          name: license_type
+          description: Type of license get from api get license types
+        - schema:
+            type: integer
+          in: query
+          name: capital_type
+          description: Get from api get capital type
+        - schema:
+            type: string
+            example: '2021-06-01'
+          in: query
+          name: startDate
+          required: true
+          description: 'License last modified date (start from), (“yyyy-MM-dd”)'
+        - schema:
+            type: string
+          in: query
+          description: 'License last modified date (to), (“yyyy-MM-dd”)'
+          name: endDate
+        - schema:
+            type: string
+            example: '1'
+          in: header
+          name: Authorize-Agent
+          required: true
+        - schema:
+            type: string
+            example: Bearer yourTokenHere==
+          in: header
+          name: CamDx-Authorization
+          required: true
+        - schema:
+            type: string
+            example: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      number_of_approved: 0
+                      number_of_draft: 0
+                      number_of_expired: 0
+                      number_of_rejected: 0
+                      number_of_returned: 0
+                      number_of_reviewing: 0
+                      number_of_submitted: 0
+                      total_number_of_all_license: 0
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    status: 1
+                    message: Success
+                    data:
+                      - _id:
+                          _id: 62708acf89648886fecb40c5
+                          country_code: KH
+                          nationality_kh: ខ្មែរ
+                          nationality_en: Cambodian
+                          gdt_id: 30
+                          name_en: Cambodia
+                          name_kh: កម្ពុជា
+                          createdAt: '2022-05-03T01:52:15.219Z'
+                          updatedAt: '2022-05-03T01:52:15.219Z'
+                          __v: 0
+                        total: 110
+                        total_male: 69
+                        total_female: 41
+                properties:
+                  code:
+                    type: integer
+                    description: |
+                      Response code: 1: Successfully, 0: Not found, -1: Internal Server Error
+                  message:
+                    type: string
+                    description: 'Response message  '
+                  data:
+                    type: object
+                    description: Return list of company statistic
+                    properties:
+                      number_of_approved:
+                        type: integer
+                        description: Number of approved application
+                      number_of_draft:
+                        type: integer
+                        description: Number of draft application
+                      number_of_expired:
+                        type: integer
+                        description: Number of expired application
+                      number_of_rejected:
+                        type: integer
+                        description: Number of rejected application
+                      number_of_returned:
+                        type: integer
+                        description: Number of returned application
+                      number_of_reviewing:
+                        type: integer
+                        description: Number of reviewing application
+                      number_of_submitted:
+                        type: integer
+                        description: Number of submitted application
+                      total_number_of_all_license:
+                        type: integer
+                        description: Total number of all application
+      description: Get application statistic
+      security: []
+      x-internal: false
+    parameters: []
+  /r1/CAMBODIA/GOV/CAMDX-20201222/MOT/obr-api/statistic/biz-owner/nationality:
+    get:
+      tags:
+        - statistics
+      summary: Get biz-owner/manager statistic
+      operationId: getBizOwnerManagerStatistic
+      parameters:
+        - name: nationalityCode
+          in: query
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 3
+            default: KH
+            example: KH
+          example: KH
+          description: 'Nationality code (KH, US, UK, .....)'
+        - schema:
+            type: string
+            example: '1'
+          in: header
+          name: Authorize-Agent
+          required: true
+        - schema:
+            type: string
+            example: Bearer yourTokenHere==
+          in: header
+          name: CamDx-Authorization
+          required: true
+        - schema:
+            type: string
+            example: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      nationality_code: string
+                      number_of_female_biz_owner: 0
+                      number_of_male_biz_owner: 0
+                      total_number_of_owner: 0
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        number_of_male_biz_owner:
+                          type: integer
+                        number_of_female_biz_owner:
+                          type: integer
+                        total_number_of_owner:
+                          type: integer
+                        nationality_code:
+                          type: string
+                        nationality_name_en:
+                          type: string
+                        nationality_name_kh:
+                          type: string
+                x-examples:
+                  example-1:
+                    code: 200
+                    message: OK
+                    data:
+                      - number_of_male_biz_owner: 20
+                        number_of_female_biz_owner: 2
+                        total_number_of_owner: 22
+                        nationality_code: KH
+                        nationality_name_en: Cambodian
+                        nationality_name_kh: ខ្មែរ
+      description: Get biz-owner/manager statistic
+      security: []
+      x-internal: false
+    parameters: []
+  /r1/CAMBODIA/GOV/CAMDX-20201222/MOT/obr-api/licenses:
+    get:
+      tags:
+        - applications
+      summary: Get all applications
+      operationId: getAllApplications
+      requestBody:
+        content: {}
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: 'Registraid_id, company_name …'
+        - name: license_type
+          in: query
+          schema:
+            type: integer
+          example: 1
+          description: ObjectId of Mongodb
+        - name: applicationStatus
+          in: query
+          schema:
+            type: integer
+          example: 20
+          description: Check table status Mapping
+        - schema:
+            type: string
+            example: '1'
+          in: header
+          name: Authorize-Agent
+          required: true
+        - schema:
+            type: string
+            example: Bearer yourTokenHere==
+          in: header
+          name: CamDx-Authorization
+          required: true
+        - schema:
+            type: string
+            example: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        request_no:
+                          type: string
+                        single_id:
+                          type: string
+                        company_name_en:
+                          type: string
+                        company_name_kh:
+                          type: string
+                        license_type:
+                          type: object
+                          properties:
+                            code:
+                              type: string
+                            name_kh:
+                              type: string
+                            name_en:
+                              type: string
+                        license_status:
+                          type: string
+                        submitted_date:
+                          type: 'null'
+                        decision_date:
+                          type: 'null'
+                        expired_date:
+                          type: 'null'
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      size:
+                        type: integer
+                      offSet:
+                        type: integer
+                      total_page:
+                        type: integer
+                      total_counts:
+                        type: integer
+                x-examples:
+                  example-1:
+                    code: 200
+                    message: OK
+                    data:
+                      - request_no: D20220516000400
+                        single_id: '12345678'
+                        company_name_en: 'METHEA GUARD CO., LTD.'
+                        company_name_kh: មេធា ហ្គាឌ
+                        license_type:
+                          code: ACCOMMODATION
+                          name_kh: សណ្ឋាគារ ឬសេវាស្នាក់នៅ
+                          name_en: Hotel
+                        license_status: DRAFT
+                        submitted_date: null
+                        decision_date: null
+                        expired_date: null
+                      - request_no: '2'
+                        single_id: '3211'
+                        company_name_en: SOOOK LTD
+                        company_name_kh: SOOK LTD
+                        license_type:
+                          code: ACCOMMODATION
+                          name_kh: សណ្ឋាគារ ឬសេវាស្នាក់នៅ
+                          name_en: Hotel
+                        license_status: DRAFT
+                        submitted_date: null
+                        decision_date: null
+                        expired_date: null
+                      - request_no: D20210726000007
+                        single_id: '1001030'
+                        company_name_en: 'V&T SWISSCOM CO., LTD.'
+                        company_name_kh: វី&ធី ស្វ៊ីសខម ឯ.ក
+                        license_type: null
+                        license_status: DRAFT
+                        submitted_date: null
+                        decision_date: null
+                        expired_date: null
+                      - request_no: D20210709000002
+                        single_id: '1001030'
+                        company_name_en: 'V&T SWISSCOM CO., LTD.'
+                        company_name_kh: វី&ធី ស្វ៊ីសខម ឯ.ក
+                        license_type:
+                          code: ACCOMMODATION
+                          name_kh: សណ្ឋាគារ ឬសេវាស្នាក់នៅ
+                          name_en: Hotel
+                        license_status: DRAFT
+                        submitted_date: null
+                        decision_date: null
+                        expired_date: null
+                      - request_no: D20220607000404
+                        single_id: '90909090'
+                        company_name_en: 'METHEA GUARD CO., LTD.'
+                        company_name_kh: មេធា ហ្គាឌ
+                        license_type:
+                          code: TRAVEL-AGENCY
+                          name_kh: ទីភ្នាក់ងារទេសចរណ៍
+                          name_en: Travel Agency
+                        license_status: DRAFT
+                        submitted_date: null
+                        decision_date: null
+                        expired_date: null
+                      - request_no: D20220425000396
+                        single_id: '0948485485'
+                        company_name_en: MAMACHI
+                        company_name_kh: ម៉ាម៉ាឈី
+                        license_type:
+                          code: ACCOMMODATION
+                          name_kh: សណ្ឋាគារ ឬសេវាស្នាក់នៅ
+                          name_en: Hotel
+                        license_status: DRAFT
+                        submitted_date: null
+                        decision_date: null
+                        expired_date: null
+                      - request_no: D20210726000009
+                        single_id: '1001030'
+                        company_name_en: 'V&T SWISSCOM CO., LTD.'
+                        company_name_kh: វី&ធី ស្វ៊ីសខម ឯ.ក
+                        license_type:
+                          code: ACCOMMODATION
+                          name_kh: សណ្ឋាគារ ឬសេវាស្នាក់នៅ
+                          name_en: Hotel
+                        license_status: DRAFT
+                        submitted_date: null
+                        decision_date: null
+                        expired_date: null
+                      - request_no: D20210816000109
+                        single_id: '4010015184'
+                        company_name_en: CHAN CHORYIRA
+                        company_name_kh: ច័ន្ទ ឆយីរ៉ា
+                        license_type:
+                          code: ACCOMMODATION
+                          name_kh: សណ្ឋាគារ ឬសេវាស្នាក់នៅ
+                          name_en: Hotel
+                        license_status: DRAFT
+                        submitted_date: null
+                        decision_date: null
+                        expired_date: null
+                      - request_no: D20210715000005
+                        single_id: '1001158'
+                        company_name_en: DERM TNOT
+                        company_name_kh: ដើមត្នោត
+                        license_type:
+                          code: ACCOMMODATION
+                          name_kh: សណ្ឋាគារ ឬសេវាស្នាក់នៅ
+                          name_en: Hotel
+                        license_status: DRAFT
+                        submitted_date: null
+                        decision_date: null
+                        expired_date: null
+                      - request_no: '15'
+                        single_id: '6611155'
+                        company_name_en: TEST555
+                        company_name_kh: TEST555
+                        license_type:
+                          code: RESTAURANT
+                          name_kh: ភោជនីដ្ឋាន-អាហារដ្ឋាន
+                          name_en: Restaurant
+                        license_status: DRAFT
+                        submitted_date: null
+                        decision_date: null
+                        expired_date: null
+                    pagination:
+                      page: 1
+                      size: 10
+                      offSet: 0
+                      total_page: 10
+                      total_counts: 99
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      - request_no: string
+                        single_id: string
+                        company_name_en: string
+                        company_name_kh: string
+                        license_type:
+                          code: string
+                          name_kh: string
+                          name_en: string
+                        license_status: string
+                        submitted_date: null
+                        decision_date: null
+                        expired_date: null
+                    pagination:
+                      page: 0
+                      size: 0
+                      offSet: 0
+                      total_page: 0
+                      total_counts: 0
+      security: []
+      description: Get all applications
+    parameters: []
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MOT/obr-api/licenses/{single-id}':
+    get:
+      tags:
+        - applications
+      summary: Get application by Single ID
+      operationId: getAllApplicationsBySingleID
+      requestBody:
+        content: {}
+      parameters:
+        - schema:
+            type: string
+            example: '1'
+          in: header
+          name: Authorize-Agent
+          required: true
+        - schema:
+            type: string
+            example: Bearer yourTokenHere==
+          in: header
+          name: CamDx-Authorization
+          required: true
+        - schema:
+            type: string
+            example: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      single_id:
+                        type: string
+                      company_name_en:
+                        type: string
+                      company_name_kh:
+                        type: string
+                      licenses:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            request_no:
+                              type: string
+                            status:
+                              type: string
+                            license_type:
+                              type: object
+                              properties:
+                                code:
+                                  type: string
+                            services:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                x-examples:
+                  example-1:
+                    code: 200
+                    message: OK
+                    data:
+                      single_id: '1001111'
+                      company_name_en: 'METHEA GUARD CO., LTD.'
+                      company_name_kh: មេធា ហ្គាឌ
+                      licenses:
+                        - request_no: '20210806000004'
+                          status: SUBMITTED
+                          license_type:
+                            code: TRAVEL-AGENCY
+                          services:
+                            - code: OUTBOUND
+                            - code: INBOUND
+                            - code: DOMESTIC
+                            - code: TRA_AGENCY
+                        - request_no: '20210614000007'
+                          status: SUBMITTED
+                          license_type:
+                            code: TRAVEL-AGENCY
+                          services:
+                            - code: INBOUND
+                        - request_no: '20210825000018'
+                          status: RETURNED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                        - request_no: '20210827000022'
+                          status: SUBMITTED
+                          license_type:
+                            code: TRAVEL-AGENCY
+                          services:
+                            - code: DOMESTIC
+                        - request_no: '20210809000005'
+                          status: SUBMITTED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                        - request_no: '20210820000017'
+                          status: REJECTED
+                          license_type:
+                            code: RESTAURANT
+                          services: []
+                        - request_no: '20210608000001'
+                          status: RETURNED
+                          license_type:
+                            code: RESTAURANT
+                          services: []
+                        - request_no: '20211008000029'
+                          status: REVIEWING
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                        - request_no: '20210830000028'
+                          status: SUBMITTED
+                          license_type:
+                            code: TRAVEL-AGENCY
+                          services:
+                            - code: OUTBOUND
+                            - code: INBOUND
+                        - request_no: '20211022000033'
+                          status: SUBMITTED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                        - request_no: '20211103000036'
+                          status: SUBMITTED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                            - code: RESTAURANT
+                        - request_no: '20211103000035'
+                          status: SUBMITTED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                            - code: RESTAURANT
+                        - request_no: '20211215000038'
+                          status: SUBMITTED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                            - code: RESTAURANT
+                            - code: SPA
+                            - code: DISCO
+                            - code: KARAOKE
+                        - request_no: '20210802000002'
+                          status: EXPIRED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOSTEL
+                        - request_no: '20210507000001'
+                          status: SUBMITTED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                            - code: DISCO
+                        - request_no: '20211022000032'
+                          status: SUBMITTED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                        - request_no: '20210810000013'
+                          status: SUBMITTED
+                          license_type:
+                            code: TRAVEL-AGENCY
+                          services:
+                            - code: TRA_AGENCY
+                            - code: DOMESTIC
+                            - code: INBOUND
+                            - code: OUTBOUND
+                        - request_no: '20210624000001'
+                          status: APPROVED
+                          license_type:
+                            code: TRAVEL-AGENCY
+                          services:
+                            - code: OUTBOUND
+                            - code: INBOUND
+                            - code: DOMESTIC
+                        - request_no: '20211022000031'
+                          status: SUBMITTED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                        - request_no: '20220601000041'
+                          status: SUBMITTED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                        - request_no: '20210826000021'
+                          status: SUBMITTED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                            - code: RESTAURANT
+                            - code: DISCO
+                            - code: KARAOKE
+                            - code: SPA
+                            - code: BEER_GARDEN
+                        - request_no: '20210825000019'
+                          status: RETURNED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOSTEL
+                        - request_no: '20211114000037'
+                          status: SUBMITTED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+                        - request_no: '20211022000034'
+                          status: SUBMITTED
+                          license_type:
+                            code: ACCOMMODATION
+                          services:
+                            - code: HOTEL
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      single_id: string
+                      company_name_en: string
+                      company_name_kh: string
+                      licenses:
+                        - request_no: string
+                          status: string
+                          license_type:
+                            code: string
+                          services:
+                            - code: string
+      security: []
+      description: Get application by Single ID
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MOT/obr-api/licenses/{single_id}/timeline/{request_no}':
+    get:
+      tags:
+        - applications
+      summary: Get applications timeline (histories)
+      operationId: getApplicationsTimeline
+      parameters:
+        - schema:
+            type: string
+            example: '1'
+          in: header
+          name: Authorize-Agent
+          required: true
+        - schema:
+            type: string
+            example: Bearer yourTokenHere==
+          in: header
+          name: CamDx-Authorization
+          required: true
+        - schema:
+            type: string
+            example: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      request_no:
+                        type: string
+                      single_id:
+                        type: string
+                      company_name_en:
+                        type: string
+                      company_name_kh:
+                        type: string
+                      timelines:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            event_date_time:
+                              type: string
+                            title_en:
+                              type: string
+                            title_kh:
+                              type: string
+                            description_en:
+                              type: string
+                            description_kh:
+                              type: string
+                x-examples:
+                  example-1:
+                    code: 200
+                    message: OK
+                    data:
+                      request_no: D20210621000021
+                      single_id: '1010015439'
+                      company_name_en: 'NATA CO., LTD.'
+                      company_name_kh: ណាត់តា ឯ.ក
+                      timelines:
+                        - event_date_time: '2021-05-15T14:24:23.250678'
+                          title_en: License Returned
+                          title_kh: អាជ្ញាបណ្ណត្រូវបញ្ជូលត្រឡប់
+                          description_en: រូបថតអ្នកគ្រប់គ្រងមិនច្បាស់
+                          description_kh: រូបថតអ្នកគ្រប់គ្រងមិនច្បាស់
+                        - event_date_time: '2021-05-15T11:33:07.974384'
+                          title_en: License Application Submitted
+                          title_kh: ដាក់ពាក្យស្នើរសុំអាជ្ញាបណ្ណ
+                          description_en: License application submitted into system
+                          description_kh: ពាក្យស្នើរសុំអាជ្ញាបណ្ណបានចូលក្នុងប្រព័ន្ធ
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      request_no: string
+                      single_id: string
+                      company_name_en: string
+                      company_name_kh: string
+                      timelines:
+                        - event_date_time: string
+                          title_en: string
+                          title_kh: string
+                          description_en: string
+                          description_kh: string
+      description: Get applications timeline (histories)
+      security: []
+    parameters:
+      - schema:
+          type: string
+        name: single_id
+        in: path
+        required: true
+        description: Single ID
+      - schema:
+          type: string
+        name: request_no
+        in: path
+        required: true
+        description: Request Number
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MOT/obr-api/licenses/details/{single_id}/info/{request_no}':
+    get:
+      tags:
+        - applications
+      summary: Get application detail
+      operationId: getApplicationDetail
+      parameters:
+        - schema:
+            type: string
+            example: '1'
+          in: header
+          name: Authorize-Agent
+          required: true
+        - schema:
+            type: string
+            example: Bearer yourTokenHere==
+          in: header
+          name: CamDx-Authorization
+          required: true
+        - schema:
+            type: string
+            example: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      company_data:
+                        single_id: string
+                        company_name_en: string
+                        company_name_kh: string
+                        company_email: string
+                        company_phone_number: string
+                        total_number_of_employees: null
+                        total_number_of_female_employees: null
+                        number_of_foreign_employees: null
+                        number_of_foreign_female_employees: null
+                        is_register_via_obr: true
+                        use_obr_business_address: true
+                        current_address:
+                          province:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          district:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          commune:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          village:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          house_number: string
+                          street_name: string
+                          group_name: string
+                          latitude: null
+                          longitude: null
+                      biz_owner_data:
+                        first_name_kh: string
+                        first_name_en: string
+                        last_name_kh: string
+                        last_name_en: string
+                        date_of_birth: string
+                        gender: string
+                        identity_code: string
+                        phone_number: string
+                        email: string
+                        nationality_code: string
+                        nationality_name_kh: string
+                        nationality_name_en: string
+                        current_address:
+                          province:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          district:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          commune:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          village:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          house_number: string
+                          street_name: string
+                          group_name: string
+                          latitude: null
+                          longitude: null
+                      license_data:
+                        request_no: string
+                        license_type: string
+                        service_type: string
+                        license_properties:
+                          additional_services:
+                            - {}
+                          hotel_size: string
+                          hotel_ranking: string
+                          is_additional_services: true
+                        submitted_date: string
+                        decision_date: null
+                        expired_date: string
+                        license_status: string
+                        payment_status: string
+                      supporting_docs:
+                        - code: string
+                          file_name: string
+                      register_by:
+                        first_name_kh: string
+                        first_name_en: string
+                        last_name_kh: string
+                        last_name_en: string
+                        phone: string
+                        email: string
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      company_data:
+                        type: object
+                        properties:
+                          single_id:
+                            type: string
+                          company_name_en:
+                            type: string
+                          company_name_kh:
+                            type: string
+                          company_email:
+                            type: string
+                          company_phone_number:
+                            type: string
+                          total_number_of_employees:
+                            type: 'null'
+                          total_number_of_female_employees:
+                            type: 'null'
+                          number_of_foreign_employees:
+                            type: 'null'
+                          number_of_foreign_female_employees:
+                            type: 'null'
+                          is_register_via_obr:
+                            type: boolean
+                          use_obr_business_address:
+                            type: boolean
+                          current_address:
+                            type: object
+                            properties:
+                              province:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                  name_en:
+                                    type: string
+                                  name_kh:
+                                    type: string
+                              district:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                  name_en:
+                                    type: string
+                                  name_kh:
+                                    type: string
+                              commune:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                  name_en:
+                                    type: string
+                                  name_kh:
+                                    type: string
+                              village:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                  name_en:
+                                    type: string
+                                  name_kh:
+                                    type: string
+                              house_number:
+                                type: string
+                              street_name:
+                                type: string
+                              group_name:
+                                type: string
+                              latitude:
+                                type: 'null'
+                              longitude:
+                                type: 'null'
+                      biz_owner_data:
+                        type: object
+                        properties:
+                          first_name_kh:
+                            type: string
+                          first_name_en:
+                            type: string
+                          last_name_kh:
+                            type: string
+                          last_name_en:
+                            type: string
+                          date_of_birth:
+                            type: string
+                          gender:
+                            type: string
+                          identity_code:
+                            type: string
+                          phone_number:
+                            type: string
+                          email:
+                            type: string
+                          nationality_code:
+                            type: string
+                          nationality_name_kh:
+                            type: string
+                          nationality_name_en:
+                            type: string
+                          current_address:
+                            type: object
+                            properties:
+                              province:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                  name_en:
+                                    type: string
+                                  name_kh:
+                                    type: string
+                              district:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                  name_en:
+                                    type: string
+                                  name_kh:
+                                    type: string
+                              commune:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                  name_en:
+                                    type: string
+                                  name_kh:
+                                    type: string
+                              village:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                  name_en:
+                                    type: string
+                                  name_kh:
+                                    type: string
+                              house_number:
+                                type: string
+                              street_name:
+                                type: string
+                              group_name:
+                                type: string
+                              latitude:
+                                type: 'null'
+                              longitude:
+                                type: 'null'
+                      license_data:
+                        type: object
+                        properties:
+                          request_no:
+                            type: string
+                          license_type:
+                            type: string
+                          service_type:
+                            type: string
+                          license_properties:
+                            type: object
+                            properties:
+                              additional_services:
+                                type: array
+                                items:
+                                  type: object
+                                  properties: {}
+                              hotel_size:
+                                type: string
+                              hotel_ranking:
+                                type: string
+                              is_additional_services:
+                                type: boolean
+                          submitted_date:
+                            type: string
+                          decision_date:
+                            type: 'null'
+                          expired_date:
+                            type: string
+                          license_status:
+                            type: string
+                          payment_status:
+                            type: string
+                      supporting_docs:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            code:
+                              type: string
+                            file_name:
+                              type: string
+                      register_by:
+                        type: object
+                        properties:
+                          first_name_kh:
+                            type: string
+                          first_name_en:
+                            type: string
+                          last_name_kh:
+                            type: string
+                          last_name_en:
+                            type: string
+                          phone:
+                            type: string
+                          email:
+                            type: string
+                x-examples:
+                  example-1:
+                    code: 200
+                    message: OK
+                    data:
+                      company_data:
+                        single_id: '1001111'
+                        company_name_en: 'METHEA GUARD CO., LTD.'
+                        company_name_kh: មេធា ហ្គាឌ
+                        company_email: metheaguard@mail.com
+                        company_phone_number: +855 12 345 543
+                        total_number_of_employees: null
+                        total_number_of_female_employees: null
+                        number_of_foreign_employees: null
+                        number_of_foreign_female_employees: null
+                        is_register_via_obr: false
+                        use_obr_business_address: false
+                        current_address:
+                          province:
+                            code: '18'
+                            name_en: Preah Sihanouk
+                            name_kh: ព្រះសីហនុ
+                          district:
+                            code: '1803'
+                            name_en: Stueng Hav
+                            name_kh: ស្ទឹងហាវ
+                          commune:
+                            code: '180302'
+                            name_en: Ou Treh
+                            name_kh: អូរត្រេះ
+                          village:
+                            code: '18030201'
+                            name_en: Phum Muoy
+                            name_kh: ភូមិ១
+                          house_number: ដឹ អូឡំាព្យា ស៊ីធី បន្ទប់លេខ២០១០ អគារលេខC7 The Fortune Tower
+                          street_name: '23'
+                          group_name: ''
+                          latitude: null
+                          longitude: null
+                      biz_owner_data:
+                        first_name_kh: ណូរា
+                        first_name_en: NORA
+                        last_name_kh: សាន
+                        last_name_en: SAN
+                        date_of_birth: '1991-11-27'
+                        gender: MALE
+                        identity_code: '123233'
+                        phone_number: '092385903'
+                        email: emily@gmail.coom
+                        nationality_code: KH
+                        nationality_name_kh: ខ្មែរ
+                        nationality_name_en: Cambodian
+                        current_address:
+                          province:
+                            code: '19'
+                            name_en: Stung Treng
+                            name_kh: ស្ទឹងត្រែង
+                          district:
+                            code: '1906'
+                            name_en: Borei Ou Svay Senchey
+                            name_kh: បុរីអូរស្វាយសែនជ័យ
+                          commune:
+                            code: '190601'
+                            name_en: Ou Svay
+                            name_kh: អូរស្វាយ
+                          village:
+                            code: '19060101'
+                            name_en: Kaoh Pnov
+                            name_kh: កោះព្នៅ
+                          house_number: '12'
+                          street_name: '3'
+                          group_name: '3'
+                          latitude: null
+                          longitude: null
+                      license_data:
+                        request_no: '20210825000018'
+                        license_type: ACCOMMODATION
+                        service_type: HOTEL
+                        license_properties:
+                          additional_services: []
+                          hotel_size: H_301_UP
+                          hotel_ranking: H_4_STAR
+                          is_additional_services: false
+                        submitted_date: '2021-08-25'
+                        decision_date: null
+                        expired_date: '2022-08-25'
+                        license_status: RETURNED
+                        payment_status: PAYMENT_ACCEPTED
+                      supporting_docs:
+                        - code: PID
+                          file_name: Testing document.pdf
+                        - code: AOA
+                          file_name: Testing document.pdf
+                        - code: CQF
+                          file_name: Testing document.pdf
+                        - code: DCT
+                          file_name: Testing document.pdf
+                        - code: POM
+                          file_name: 4x6 photo.jpg
+                        - code: CRP
+                          file_name: Testing document.pdf
+                        - code: ACT
+                          file_name: Testing document.pdf
+                      register_by:
+                        first_name_kh: សូរា
+                        first_name_en: Sora
+                        last_name_kh: សូរា
+                        last_name_en: Sora
+                        phone: '+85592391577'
+                        email: kuylim.tith@gmail.com
+      description: Get application detail
+    parameters:
+      - schema:
+          type: string
+        name: single_id
+        in: path
+        required: true
+        description: Single ID
+      - schema:
+          type: string
+        name: request_no
+        in: path
+        required: true
+        description: Request Number
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MOT/obr-api/licenses/details/{single_id}/info/{request_no}/document/PID':
+    get:
+      tags:
+        - applications
+      summary: Get License Supporting Docs
+      operationId: getApplicationSupportingDocument
+      parameters:
+        - schema:
+            type: string
+            example: '1'
+          in: header
+          name: Authorize-Agent
+          required: true
+        - schema:
+            type: string
+            example: Bearer yourTokenHere==
+          in: header
+          name: CamDx-Authorization
+          required: true
+        - schema:
+            type: string
+            example: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+            application/pdf:
+              schema:
+                type: object
+                properties: {}
+            application/xml:
+              schema:
+                type: object
+                properties: {}
+        '':
+          headers:
+            header status:
+              schema:
+                type: string
+              description: "200: OK  •\thttp body: byte stream 404: File not found •\t400: Bad request"
+      description: Get application supporting document
+      security: []
+    parameters:
+      - schema:
+          type: string
+        name: single_id
+        in: path
+        required: true
+        description: Single ID
+      - schema:
+          type: string
+        name: request_no
+        in: path
+        required: true
+        description: Request Number

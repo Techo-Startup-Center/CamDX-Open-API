@@ -1,0 +1,188 @@
+openapi: 3.1.0
+info:
+  title: NBFSA
+  version: 1.0.0
+  description: "## \U0001F4AB Overview\n\nIn Online Business Registration (OBR), identity information is one among the most important data for verifying users during the approval process. CamDX is the data exchange platform which guarantees the security of the data over the internet. MoI has been joining CamDX since OBR phase 1 and sharing their data with related participants. To make the identity verification process easy and simple at the officer's part, the team will open personal information from MoI via the PR  system. Technically, the API will be accessible with only organization token which is the token owned by participants in CamDX. When there is an incoming request to PR, the PR system will validate the organization token before fetching data from the MoI system via CamDX.\n\nThe User Profile APIs are used for organization level access and available as the following:\n* Get user’s profile by ID number\n* Get user’s photo by ID number\n\n## \U0001F4AB Required User Information\nAccording to the meeting with MOT, MPTC, and MISTI, their portals require the following user information: \n1. ID card number\n2. Surname (KH)\n3. Given name (KH)\n4. Surname (EN)\n5. Given name (EN)\n6. Gender\n7. Date of birth\n8. Place of birth\n9. Issued date\n10. Expired date\n\n\n### \U0001F9F0 Authentication\nFor security reason, authentication mechanism is significant while exchange data via web service between Consumer’s system and PR system. Consumer’s system must attach CamDigiKey Organization Access Token in the HTTP request Authorization header with bearer during request to Consumer’s endpoint."
+  contact:
+    name: CamDX Team
+    email: camdx@mef.gov.kh
+    url: 'https://www.camdx.gov.kh'
+  license:
+    name: MIT
+    url: 'https://spdx.org/licenses/MIT'
+  termsOfService: 'https://www.camdx.gov.kh/#contact'
+  summary: Non-Bank Financial Services Authority License Registration Open API
+servers:
+  - url: 'https://mef-license-api.myoptistech.com'
+    description: Sandbox
+  - url: 'https://nbfsa.registrationservices.gov.kh'
+    description: Production
+components:
+  securitySchemes:
+    CamDigiKey-JWT:
+      type: http
+      scheme: bearer
+      description: Organization level’s token which generate from CamDigiKey.
+tags:
+  - name: statistics
+    description: Number of statistic
+  - name: applications
+    description: Everything about your application
+paths:
+  /open-api/v1/any-user-profile-by-org:
+    post:
+      summary: Get any user’s profile by ID card number
+      operationId: getAnyUsersProfileByIdCardNumber
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    status: 0
+                    message: string
+                    data:
+                      gender: string
+                      date_of_birth: string
+                      issued_date: string
+                      expired_date: string
+                      place_of_birth: string
+                      current_address: string
+                      surname_kh: string
+                      given_name_kh: string
+                      surname_en: string
+                      given_name_en: string
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    status: 1
+                    message: Success
+                    data:
+                      - _id:
+                          _id: 62708acf89648886fecb40c5
+                          country_code: KH
+                          nationality_kh: ខ្មែរ
+                          nationality_en: Cambodian
+                          gdt_id: 30
+                          name_en: Cambodia
+                          name_kh: កម្ពុជា
+                          createdAt: '2022-05-03T01:52:15.219Z'
+                          updatedAt: '2022-05-03T01:52:15.219Z'
+                          __v: 0
+                        total: 110
+                        total_male: 69
+                        total_female: 41
+                properties:
+                  status:
+                    type: integer
+                    description: |
+                      Response code: 1: Successfully, 0: Not found, -1: Internal Server Error
+                  message:
+                    type: string
+                    description: 'Response message  '
+                  data:
+                    type: object
+                    description: Return list of company statistic
+                    properties:
+                      gender:
+                        type: string
+                        description: User’s gender (F | M)
+                      date_of_birth:
+                        type: string
+                        description: User’s birthday (dd-MM-YYYY)
+                      issued_date:
+                        type: string
+                        description: ID’s issued date (dd-MM-YYYY)
+                      expired_date:
+                        type: string
+                        description: ID’s expired date (dd-MM-YYYY)
+                      place_of_birth:
+                        type: string
+                        description: User’s place of birthday
+                      current_address:
+                        type: string
+                        description: Current address
+                        deprecated: true
+                      surname_kh:
+                        type: string
+                        description: User’s surname in Khmer
+                      given_name_kh:
+                        type: string
+                        description: User’s given name in Khmer
+                      surname_en:
+                        type: string
+                        description: User’s surname in English
+                      given_name_en:
+                        type: string
+                        description: User’s given name in English
+      description: Get any user’s profile by ID card number
+      security:
+        - CamDigiKey-JWT: []
+      x-internal: false
+      tags:
+        - applications
+    parameters: []
+  /open-api/v1/any-user-profile-by-org/photo:
+    post:
+      summary: Get any user’s photo by ID card number
+      operationId: getAnyUsersPhotoByIdCardNumber
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: id_card_number
+          description: Cambodia National Identification Number
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    status: 0
+                    message: string
+                    data: string
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    status: 1
+                    message: Success
+                    data:
+                      - _id:
+                          _id: 62708acf89648886fecb40c5
+                          country_code: KH
+                          nationality_kh: ខ្មែរ
+                          nationality_en: Cambodian
+                          gdt_id: 30
+                          name_en: Cambodia
+                          name_kh: កម្ពុជា
+                          createdAt: '2022-05-03T01:52:15.219Z'
+                          updatedAt: '2022-05-03T01:52:15.219Z'
+                          __v: 0
+                        total: 110
+                        total_male: 69
+                        total_female: 41
+                properties:
+                  status:
+                    type: integer
+                    description: |
+                      Response code: 1: Successfully, 0: Not found, -1: Internal Server Error
+                  message:
+                    type: string
+                    description: 'Response message  '
+                  data:
+                    type: string
+                    description: User’s photo in base64 encoded data
+      description: Get any user’s photo by ID card number
+      security:
+        - CamDigiKey-JWT: []
+      x-internal: false
+      tags:
+        - applications
+    parameters: []
