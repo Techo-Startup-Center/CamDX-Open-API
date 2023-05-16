@@ -1,0 +1,170 @@
+openapi: 3.1.0
+info:
+  title: GDT
+  version: 1.0.0
+  description: "## \U0001F4AB Overview\n\nIn OBR 2nd phase, GDT data has become one of the primary data for business registration in other ministry portals. To make form fill more user friendly and avoid any typo mistake and improve correctness of the TIN number, Patent and other documents. User can use their CamDigiKey access token to retrieve his/her company information from GDT system via GDT Open API. \n\n### \U0001F9F0 Authentication\nFor security reason, authentication mechanism is significant while exchange data via web service between Consumer’s system and GDT system. Comsumer’s system must attach CamDigiKey Organization/User Access Token in the HTTP request header during request to Consumer’s endpoint.\n\n### \U0001F9F0 Code Mapping\n\n<table>\n <tbody><tr>\n  <td>Code Type</td>\n  <td>Code</td>\n  <td>Khmer Definition</td>\n  <td>English Definition</td>\n  <td>Remarks</td>\n </tr>\n <tr>\n  <td rowspan=\"4\">Document Types</td>\n  <td>CTR</td>\n  <td><span style=\"mso-bidi-language:KHM\" lang=\"KHM\">វិញ្ញាបនបត្រចុះបញ្ជីពន្ធដារ</span></td>\n  <td>Certificate of Tax Registration</td>\n  <td></td>\n </tr>\n <tr>\n  <td>PT</td>\n  <td><span style=\"mso-bidi-language:KHM\" lang=\"KHM\">ពន្ធប៉ាតង់</span></td>\n  <td>Patent Tax</td>\n  <td>Current Year</td>\n </tr>\n</tbody></table>"
+  contact:
+    name: CamDX Team
+    email: camdx@mef.gov.kh
+    url: 'https://www.camdx.gov.kh'
+  license:
+    name: MIT
+    url: 'https://spdx.org/licenses/MIT'
+  termsOfService: 'https://www.camdx.gov.kh/#contact'
+  summary: General Department of Taxation's Open API
+servers:
+  - url: 'https://dev.ss.camdx.gov.kh'
+    description: Sandbox
+  - url: 'https://ss.camdx.gov.kh:8443'
+    description: Production
+components:
+  securitySchemes:
+    CamDigiKey-JWT:
+      type: http
+      scheme: bearer
+      description: Organization level’s token which generate from CamDigiKey.
+tags:
+  - name: statistics
+    description: Number of statistic
+  - name: applications
+    description: Everything about your application
+paths:
+  '/open-api/v1/companies/{single-id}':
+    post:
+      summary: Get basic company information
+      operationId: getBasicCompanyInformation
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      companies:
+                        - single_id: string
+                          company_name_en: string
+                          company_name_kh: string
+                      pagination:
+                        total_pages: 0
+                        total_counts: 0
+                        page: 0
+                        size: 0
+                properties:
+                  code:
+                    type: integer
+                    description: |-
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      company_name_en:
+                        type: string
+                        description: Company‘s name in English
+                      company_name_kh:
+                        type: string
+                        description: Company’s name in Khmer
+                      tin_no:
+                        type: string
+                        description: TIN No (For User)
+                      patent_number:
+                        type: string
+                        description: Patent Number (For Organization)
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      company_name_en: string
+                      company_name_kh: string
+                      tin_no: string
+      security:
+        - CamDigiKey-JWT: []
+      description: Get basic company information
+      tags:
+        - company
+        - user
+        - applications
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+  '/open-api/v1/companies/{single-id}/documents':
+    post:
+      summary: Get company documents
+      operationId: getCompanyDocuments
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      companies:
+                        - single_id: string
+                          company_name_en: string
+                          company_name_kh: string
+                      pagination:
+                        total_pages: 0
+                        total_counts: 0
+                        page: 0
+                        size: 0
+                properties:
+                  header status:
+                    description: |-
+                      http body: byte stream
+
+                      200: OK 
+                      404: File not found
+                      400: Bad request
+                    type: string
+              examples:
+                example-1:
+                  value:
+                    header status: string
+      security:
+        - CamDigiKey-JWT: []
+      description: Get company documents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                document_type:
+                  type: number
+                  description: |-
+                    Document type
+                    See Code Mapping table on 2 for more details
+            examples: {}
+      tags:
+        - company
+        - user
+        - applications
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID

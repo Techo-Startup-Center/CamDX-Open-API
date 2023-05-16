@@ -1,0 +1,365 @@
+openapi: 3.1.0
+info:
+  title: MLVT
+  version: 1.0.0
+  description: "## \U0001F4AB Overview\n\nIn OBR 2nd phase, MLVT data has become one of the primary data for business registration in other ministry portals. To make form fill more user friendly and avoid any typo mistake and improve correctness of number of staff information. User can use their CamDigiKey access token to retrieve his/her company information from MLVT system via MLVT Open API.\n\n### \U0001F9F0 Authentication\nFor security reason, authentication mechanism is significant while exchange data via web service between Consumer’s system and MLVT system. Comsumer’s system must attach CamDigiKey User Access Token in the HTTP request header during request to Consumer’s endpoint."
+  contact:
+    name: CamDX Team
+    email: camdx@mef.gov.kh
+    url: 'https://www.camdx.gov.kh'
+  license:
+    name: MIT
+    url: 'https://spdx.org/licenses/MIT'
+  termsOfService: 'https://www.camdx.gov.kh/#contact'
+  summary: Ministry of Labour and Vocational Training's Open API
+servers:
+  - url: 'https://dev.ss.camdx.gov.kh'
+    description: Sandbox
+  - url: 'https://ss.camdx.gov.kh:8443'
+    description: Production
+components:
+  securitySchemes:
+    CamDigiKey-JWT:
+      type: http
+      scheme: bearer
+      description: Organization level’s token which generate from CamDigiKey.
+tags:
+  - name: application
+  - name: organization
+  - name: statistics
+  - name: user
+paths:
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MLVT/open-api/v1/companies/{single-id}':
+    get:
+      summary: User - Get number of employees (latest data)
+      operationId: getNumberOfEmployees
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      companies:
+                        - single_id: string
+                          company_name_en: string
+                          company_name_kh: string
+                      pagination:
+                        total_pages: 0
+                        total_counts: 0
+                        page: 0
+                        size: 0
+                properties:
+                  code:
+                    type: integer
+                    description: |-
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      total_workers:
+                        type: integer
+                        description: Total workers in company
+                      total_women_workers:
+                        type: integer
+                        description: 'Total women workers in company '
+                      total_foreigner_workers:
+                        type: integer
+                        description: Total foreigner workers in company
+                      total_women_foreigner_workers:
+                        type: integer
+                        description: Total foreigner women workers in company
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      total_workers: 0
+                      total_women_workers: 0
+                      total_foreigner_workers: 0
+                      total_women_foreigner_workers: 0
+      security:
+        - CamDigiKey-JWT: []
+      description: Get number of employees (latest data)
+      tags:
+        - statistics
+        - user
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MLVT/open-api/v1/companies/details/{single-id}':
+    get:
+      summary: User - Get company details (NEW)
+      operationId: getCompanyDetails
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      companies:
+                        - single_id: string
+                          company_name_en: string
+                          company_name_kh: string
+                      pagination:
+                        total_pages: 0
+                        total_counts: 0
+                        page: 0
+                        size: 0
+                properties:
+                  code:
+                    type: integer
+                    description: |-
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      single_id:
+                        type: string
+                        description: Single ID
+                      khmer_name:
+                        type: string
+                        description: Company‘s name in Khmer
+                      latin_name:
+                        type: string
+                        description: 'Company’s name in English '
+                      date_of_create:
+                        type: string
+                        description: Company’s registration date (“yyyy-MM-dd”)
+                      address_of_manage_authority:
+                        type: string
+                        description: Address of head office
+                      address_province_code:
+                        description: Provide code
+                        type: integer
+                      address_district_code:
+                        type: integer
+                        description: District code
+                      address_commune_code:
+                        type: integer
+                        description: Commune code
+                      address_village_code:
+                        type: integer
+                        description: Village code
+                      company_phone_number:
+                        type: string
+                        description: Company phone number
+                      company_fax_number:
+                        type: string
+                        description: Company fax number
+                      name_of_owner:
+                        type: string
+                        description: Owner’s name
+                      nationality_of_owner:
+                        description: Owner’s nationality
+                        type: integer
+                      name_of_director:
+                        type: string
+                        description: Director’s name
+                      nationality_of_director:
+                        description: Director’s nationality
+                        type: integer
+                      article_of_company:
+                        type: string
+                        description: Company article
+                      business_objective:
+                        type: string
+                        description: Business objective
+                      main_business_activities:
+                        type: string
+                        description: Main business activities
+                      others_business_activities:
+                        type: string
+                        description: Other business activities
+                      address:
+                        type: string
+                        description: Company address
+                      province_code:
+                        description: Provide code
+                        type: integer
+                      district_code:
+                        description: District code
+                        type: integer
+                      commune_code:
+                        description: Commune code
+                        type: integer
+                      village_code:
+                        description: Village code
+                        type: integer
+                      phone_number:
+                        description: Company phone number
+                        type: string
+                      fax_number:
+                        description: Company fax number
+                        type: string
+                      estimate_staff_amount:
+                        description: Estimate staff amount
+                        type: string
+                      estimate_female_staff_amount:
+                        description: Estimate female staff amount
+                        type: string
+                      foreign_staff_amount:
+                        description: Estimate foreign staff amount
+                        type: string
+                      foreign_female_staff_amount:
+                        description: Estimate female staff amount
+                        type: string
+                      dangerous_status:
+                        description: Dangerous Status
+                        type: string
+                      working_hours:
+                        description: Working hours
+                        type: string
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      single_id: string
+                      khmer_name: string
+                      latin_name: string
+                      date_of_create: string
+                      address_of_manage_authority: string
+                      address_province_code: 0
+                      address_district_code: 0
+                      address_commune_code: 0
+                      address_village_code: 0
+                      company_phone_number: string
+                      company_fax_number: string
+                      name_of_owner: string
+                      nationality_of_owner: 0
+                      name_of_director: string
+                      nationality_of_director: 0
+                      article_of_company: string
+                      business_objective: string
+                      main_business_activities: string
+                      others_business_activities: string
+                      address: string
+                      province_code: 0
+                      district_code: 0
+                      commune_code: 0
+                      village_code: 0
+                      phone_number: string
+                      fax_number: string
+                      estimate_staff_amount: string
+                      estimate_female_staff_amount: string
+                      foreign_staff_amount: string
+                      foreign_female_staff_amount: string
+                      dangerous_status: string
+                      working_hours: string
+      security:
+        - CamDigiKey-JWT: []
+      description: Get company details (NEW)
+      tags:
+        - applications
+        - user
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MLVT/open-api/v1/office-check/companies/{single-id}':
+    get:
+      summary: Organization - Get number of employees (latest data)
+      operationId: getNumberOfEmployees_Org
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      companies:
+                        - single_id: string
+                          company_name_en: string
+                          company_name_kh: string
+                      pagination:
+                        total_pages: 0
+                        total_counts: 0
+                        page: 0
+                        size: 0
+                properties:
+                  code:
+                    type: integer
+                    description: |-
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      total_workers:
+                        type: integer
+                        description: Total workers in company
+                      total_women_workers:
+                        type: integer
+                        description: 'Total women workers in company '
+                      total_foreigner_workers:
+                        type: integer
+                        description: Total foreigner workers in company
+                      total_women_foreigner_workers:
+                        type: integer
+                        description: Total foreigner women workers in company
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      total_workers: 0
+                      total_women_workers: 0
+                      total_foreigner_workers: 0
+                      total_women_foreigner_workers: 0
+      security:
+        - CamDigiKey-JWT: []
+      description: Get number of employees (latest data)
+      tags:
+        - statistics
+        - user
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID

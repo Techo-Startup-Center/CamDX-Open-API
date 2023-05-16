@@ -1,0 +1,1250 @@
+openapi: 3.1.0
+info:
+  title: MPTC
+  version: 1.0.0
+  description: "## \U0001F4AB Overview\n\nThis document is about data exchange and integration between Digital Public Services (DPS) with Online Business Registration (OBR). Both systems will using RESTful web service to exchange data in json format.\n\nInorder to get data from DPS system, OBR must request to DPS with payload format, which is set by DPS.\nDPS provide only pull mechanism. Once received data from DPS, OBR can display information realtime to user or save into their system base on actual usecase. Authentication and authorization are needed during transmit data between systems. Also data is securely exchange throught CamDx Platform.  \n\n### \U0001F9F0 Authentication\nFor security reason, authentication mechanism is significant while exchange data via web service between Consumer’s system and DPS system. Comsumer’s system must attach CamDigiKey Organization Access Token in the HTTP request header during request to Consumer’s endpoint.\n\n\n### Code Mapping\n<table cellspacing=\"0\" cellpadding=\"0\" border=\"1\">\n  <tbody>\n    <tr>\n      <td> Code Type </td>\n      <td> Code </td>\n      <td> Khmer Definition </td>\n      <td> English Definition </td>\n      <td> Remarks </td>\n    </tr>\n    <tr>\n      <td rowspan=\"3\">\n        <p align=\"center\"> License Types\n      </td>\n      <td>L</td>\n      <td>អាជ្ញាប័ណ្ណ</td>\n      <td>License</td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>C</td>\n      <td>វិញ្ញាបនបត្រ</td>\n      <td>Certificate</td>\n      <td></td>\n    </tr>\n    <tr>\n      <td>P</td>\n      <td>លិខិតអនុញ្ញាត</td>\n      <td>Permit</td>\n      <td></td>\n    </tr>\n    <tr>\n      <td rowspan=\"7\">\n        <p align=\"center\"> Application Status\n      </td>\n      <td> DRAFT </td>\n      <td> ពង្រៀង </td>\n      <td> Draft </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> SUBMITTED </td>\n      <td> បានដាក់ស្នើ </td>\n      <td> Submitted </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> REVIEWING </td>\n      <td> កំពុងត្រួតពិនិត្យ </td>\n      <td> Reviewing </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> RETURNED </td>\n      <td> បញ្ជូនត្រឡប់ </td>\n      <td> Returned </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> REJECTED </td>\n      <td> ច្រានចោល </td>\n      <td> Rejected </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> APPROVED </td>\n      <td> អនុម័ត </td>\n      <td> Approved </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> EXPIRED </td>\n      <td> ផុតកំណត់ </td>\n      <td> Expired </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td rowspan=\"3\">\n        <p align=\"center\"> Payment Status\n      </td>\n      <td> PAYMENT_ACCEPTED </td>\n      <td> ការទូទាត់ប្រាក់បានទទួល </td>\n      <td> Payment accecpted </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> PAYMENT_EXPIRED </td>\n      <td> ការទូទាត់ប្រាក់បានផុតកំណត់ </td>\n      <td> Payment expired </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> PENDING_PAYMENT </td>\n      <td> ការទូទាត់ប្រាក់កំពុងស្ថិតនៅក្នុងរង់ចាំ </td>\n      <td> Payment is pending </td>\n      <td></td>\n    </tr>\n  </tbody>\n</table>"
+  contact:
+    name: CamDX Team
+    email: camdx@mef.gov.kh
+    url: 'https://www.camdx.gov.kh'
+  license:
+    name: MIT
+    url: 'https://spdx.org/licenses/MIT'
+  termsOfService: 'https://www.camdx.gov.kh/#contact'
+  summary: Ministry Of Posts And Telecommunications' Open API
+servers:
+  - url: 'https://edps.ddns.net'
+    description: Development
+components:
+  securitySchemes:
+    CamDigiKey-JWT:
+      type: http
+      scheme: bearer
+      description: Organization level’s token which generate from CamDigiKey.
+tags:
+  - name: statistics
+    description: Number of statistic
+  - name: applications
+    description: Everything about your application
+paths:
+  /application/api/v1/statistic:
+    get:
+      tags:
+        - statistics
+      summary: Get application statistic
+      operationId: getApplicationStatistic
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: startDate
+          required: true
+          description: 'License last modified date (start from), (“yyyy-MM-dd”)'
+        - schema:
+            type: string
+          in: query
+          description: 'License last modified date (to), (“yyyy-MM-dd”)'
+          name: endDate
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: lcpType
+          description: Type of license See Code Mapping table  for more details
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: Successfully
+                    data:
+                      number_of_completed: 8
+                      number_of_draft: 12
+                      number_of_rejected: 0
+                      number_of_returned: 2
+                      number_of_reviewing: 35
+                      number_of_submitted: 197
+                      total_number_of_all_application: 254
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    status: 1
+                    message: Success
+                    data:
+                      - _id:
+                          _id: 62708acf89648886fecb40c5
+                          country_code: KH
+                          nationality_kh: ខ្មែរ
+                          nationality_en: Cambodian
+                          gdt_id: 30
+                          name_en: Cambodia
+                          name_kh: កម្ពុជា
+                          createdAt: '2022-05-03T01:52:15.219Z'
+                          updatedAt: '2022-05-03T01:52:15.219Z'
+                          __v: 0
+                        total: 110
+                        total_male: 69
+                        total_female: 41
+                properties:
+                  code:
+                    type: integer
+                    description: |
+                      Response code: 1: Successfully, 0: Not found, -1: Internal Server Error
+                  message:
+                    type: string
+                    description: 'Response message  '
+                  data:
+                    type: object
+                    description: Return list of company statistic
+                    properties:
+                      number_of_completed:
+                        type: integer
+                        description: Number of approved application
+                      number_of_draft:
+                        type: integer
+                        description: Number of draft application
+                      number_of_rejected:
+                        type: integer
+                        description: Number of rejected application
+                      number_of_returned:
+                        type: integer
+                        description: Number of returned application
+                      number_of_reviewing:
+                        type: integer
+                        description: Number of reviewing application
+                      number_of_submitted:
+                        type: integer
+                        description: Number of submitted application
+                      total_number_of_all_license:
+                        type: integer
+                        description: Total number of all application
+      description: Get application statistic
+      security:
+        - CamDigiKey-JWT: []
+      x-internal: false
+    parameters: []
+  /application/api/v1/statistic/biz-owner/nationality?nationalityCode=:
+    get:
+      tags:
+        - statistics
+      summary: Get biz-owner/manager statistic
+      operationId: getBizOwnerManagerStatistic
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: nationalityCode
+          description: 'Nationality code (KH, US, UK, .....)'
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      nationality_code: string
+                      number_of_female_biz_owner: 0
+                      number_of_male_biz_owner: 0
+                      total_number_of_owner: 0
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        nationality_code:
+                          type: string
+                        nationality_name_en:
+                          type: string
+                        nationality_name_kh:
+                          type: string
+                        number_of_female_biz_owner:
+                          type: integer
+                        number_of_male_biz_owner:
+                          type: integer
+                        total_number_of_owner:
+                          type: integer
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: Successfully
+                    data:
+                      - nationality_code: KH
+                        nationality_name_en: Cambodia
+                        nationality_name_kh: កម្ពុជា
+                        number_of_female_biz_owner: 235
+                        number_of_male_biz_owner: 1241
+                        total_number_of_owner: 1476
+      description: Get biz-owner/manager statistic
+      security:
+        - CamDigiKey-JWT: []
+      x-internal: false
+    parameters: []
+  /application/api/v1/lcp:
+    get:
+      tags:
+        - applications
+      summary: Get all applications
+      operationId: getAllApplications
+      requestBody:
+        content: {}
+      parameters:
+        - name: searchTerm
+          in: query
+          schema:
+            type: string
+          description: 'Registraid_id, company_name …'
+        - name: lcpType
+          in: query
+          schema:
+            type: integer
+          example: 1
+          description: Check table status Mapping
+        - name: applicationStatus
+          in: query
+          schema:
+            type: integer
+          example: 20
+          description: Check table status Mapping
+        - schema:
+            type: integer
+          in: query
+          name: page
+          description: Current page
+        - schema:
+            type: integer
+          in: query
+          name: size
+          description: Number of records
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        single_id:
+                          type: string
+                        company_name_en:
+                          type: string
+                        company_name_kh:
+                          type: string
+                        lcp_type_code:
+                          type: string
+                        lcp_type_name_en:
+                          type: string
+                        lcp_type_name_kh:
+                          type: string
+                        accep_no:
+                          type: string
+                        submitted_date_time:
+                          type: string
+                        application_status:
+                          type: string
+                        action_date_time:
+                          type: string
+                  pagination:
+                    type: object
+                    properties:
+                      total_page:
+                        type: integer
+                      size:
+                        type: integer
+                      total_counts:
+                        type: integer
+                      page:
+                        type: integer
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: Successfully
+                    data:
+                      - single_id: '5010014847'
+                        company_name_en: MALIS
+                        company_name_kh: ម្លិះ
+                        lcp_type_code: L
+                        lcp_type_name_en: License
+                        lcp_type_name_kh: អាជ្ញាបណ្ណ
+                        accep_no: N202100000168
+                        submitted_date_time: '2021-08-20 20:37:03'
+                        application_status: COMPLETED
+                        action_date_time: '2021-08-20 21:57:00'
+                      - single_id: '1001237'
+                        company_name_en: 'CHOMPA RAKSMEY CO., LTD.'
+                        company_name_kh: ចម្ប៉ារស្មី ឯ.ក
+                        lcp_type_code: L
+                        lcp_type_name_en: License
+                        lcp_type_name_kh: អាជ្ញាបណ្ណ
+                        accep_no: N202100000317
+                        submitted_date_time: '2021-08-23 14:11:54'
+                        application_status: REVIEWING
+                        action_date_time: '2022-06-21 14:52:21'
+                      - single_id: 0000000noc
+                        company_name_en: Apple Inc. v2
+                        company_name_kh: អេផ៉ល អាយអិនសី v2
+                        lcp_type_code: L
+                        lcp_type_name_en: License
+                        lcp_type_name_kh: អាជ្ញាបណ្ណ
+                        accep_no: N202100000333
+                        submitted_date_time: '2021-08-25 15:23:14'
+                        application_status: DRAFT
+                        action_date_time: '2021-08-25 15:23:14'
+                      - single_id: '5010014962'
+                        company_name_en: UNDER SEA COFFEE 168
+                        company_name_kh: កាហ្វេបាតសមុទ្រ 168
+                        lcp_type_code: L
+                        lcp_type_name_en: License
+                        lcp_type_name_kh: អាជ្ញាបណ្ណ
+                        accep_no: N202100000375
+                        submitted_date_time: '2021-08-27 16:54:08'
+                        application_status: REVIEWING
+                        action_date_time: '2021-09-21 12:02:45'
+                      - single_id: '5010014962'
+                        company_name_en: UNDER SEA COFFEE 168
+                        company_name_kh: កាហ្វេបាតសមុទ្រ 168
+                        lcp_type_code: L
+                        lcp_type_name_en: License
+                        lcp_type_name_kh: អាជ្ញាបណ្ណ
+                        accep_no: N202100000359
+                        submitted_date_time: '2021-08-28 11:16:24'
+                        application_status: REVIEWING
+                        action_date_time: '2022-06-21 14:29:11'
+                      - single_id: '1010014870'
+                        company_name_en: POPE COMPANY LIMITED
+                        company_name_kh: ពពែ ឯ.ក
+                        lcp_type_code: L
+                        lcp_type_name_en: License
+                        lcp_type_name_kh: អាជ្ញាបណ្ណ
+                        accep_no: N202100000485
+                        submitted_date_time: '2021-08-29 11:35:42'
+                        application_status: COMPLETED
+                        action_date_time: '2021-08-29 15:57:26'
+                      - single_id: '1001237'
+                        company_name_en: 'CHOMPA RAKSMEY CO., LTD.'
+                        company_name_kh: ចម្ប៉ារស្មី ឯ.ក
+                        lcp_type_code: L
+                        lcp_type_name_en: License
+                        lcp_type_name_kh: អាជ្ញាបណ្ណ
+                        accep_no: N202100000362
+                        submitted_date_time: '2021-08-29 15:26:55'
+                        application_status: REVIEWING
+                        action_date_time: '2022-06-09 10:08:55'
+                      - single_id: '5010014591'
+                        company_name_en: DERM DOUNG
+                        company_name_kh: ដើមដូង
+                        lcp_type_code: L
+                        lcp_type_name_en: License
+                        lcp_type_name_kh: អាជ្ញាបណ្ណ
+                        accep_no: N202100000508
+                        submitted_date_time: '2021-08-30 16:54:51'
+                        application_status: COMPLETED
+                        action_date_time: '2021-12-14 11:05:20'
+                      - single_id: '1001237'
+                        company_name_en: 'CHOMPA RAKSMEY CO., LTD.'
+                        company_name_kh: ចម្ប៉ារស្មី ឯ.ក
+                        lcp_type_code: L
+                        lcp_type_name_en: License
+                        lcp_type_name_kh: អាជ្ញាបណ្ណ
+                        accep_no: N202100000676
+                        submitted_date_time: '2021-08-31 17:03:21'
+                        application_status: SUBMITTED
+                        action_date_time: '2021-08-31 17:03:21'
+                      - single_id: '1001237'
+                        company_name_en: 'CHOMPA RAKSMEY CO., LTD.'
+                        company_name_kh: ចម្ប៉ារស្មី ឯ.ក
+                        lcp_type_code: L
+                        lcp_type_name_en: License
+                        lcp_type_name_kh: អាជ្ញាបណ្ណ
+                        accep_no: N202100000692
+                        submitted_date_time: '2021-08-31 19:54:05'
+                        application_status: SUBMITTED
+                        action_date_time: '2021-08-31 19:54:05'
+                    pagination:
+                      total_page: 26
+                      size: 10
+                      total_counts: 254
+                      page: 1
+              examples:
+                example-1:
+                  value:
+                    status: 0
+                    message: string
+                    data:
+                      single_id: string
+                      company_name_en: string
+                      company_name_kh: string
+                      license_type:
+                        code: string
+                        name_en: string
+                        name_kh: string
+                      license_status: string
+                      request_no: string
+                      submitted_date: string
+                      decision_date: string
+                      expired_date: string
+                    pagination:
+                      page: 0
+                      size: 0
+                      total_counts: 0
+                      total_page: 0
+      security:
+        - CamDigiKey-JWT: []
+      description: Get all applications
+    parameters: []
+  '/application/api/v1/lcp/{single-id}':
+    get:
+      tags:
+        - applications
+      summary: Get all applications
+      operationId: getApplicationBySingleIdOrMOCRegistrationNumber
+      requestBody:
+        content: {}
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      single_id:
+                        type: string
+                      company_name_en:
+                        type: string
+                      company_name_kh:
+                        type: string
+                      company_activity:
+                        type: string
+                      application_data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            accep_no:
+                              type: string
+                            lcp_type_code:
+                              type: string
+                            lcp_type_name_en:
+                              type: string
+                            lcp_type_name_kh:
+                              type: string
+                            operation_name_en:
+                              type: string
+                            operation_name_kh:
+                              type: string
+                            application_status:
+                              type: string
+                            is_lcp_issued:
+                              type: boolean
+                            lcp_issued_date:
+                              type:
+                                - 'null'
+                                - string
+                            lcp_expiry_date:
+                              type:
+                                - 'null'
+                                - string
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: Successfully
+                    data:
+                      single_id: '5010014591'
+                      company_name_en: DERM DOUNG
+                      company_name_kh: ដើមដូង
+                      company_activity: |
+                        ជំនួញលក់ដុំដោយមិនមានឯកទេស ( ការលក់ដុំសម្រាប់ទំនិញទូទៅ ការលក់ដុំទំនិញច្រើនប្រភេទ​ដោយមិនមានឯកទេសណាមួយ )
+                      application_data:
+                        - accep_no: N202100000045
+                          lcp_type_code: L
+                          lcp_type_name_en: License
+                          lcp_type_name_kh: អាជ្ញាបណ្ណ
+                          operation_name_en: International Express Delivery Licensing
+                          operation_name_kh: ការផ្ដល់អាជ្ញាបណ្ណសេវាបញ្ញើឆាប់រហ័សអន្តរជាតិ
+                          application_status: COMPLETED
+                          is_lcp_issued: true
+                          lcp_issued_date: '2021-08-19'
+                          lcp_expiry_date: '2022-08-19'
+                        - accep_no: N202100000029
+                          lcp_type_code: P
+                          lcp_type_name_en: Permit
+                          lcp_type_name_kh: លិខិតអនុញ្ញាត
+                          operation_name_en: Permit to Open a Branch for International Express Delivery Service
+                          operation_name_kh: ការអនុញ្ញាតឱ្យបើកសាខាធ្វើអាជីវកម្មបម្រើសេវាបញ្ញើឆាប់រហ័សអន្តរជាតិ
+                          application_status: COMPLETED
+                          is_lcp_issued: true
+                          lcp_issued_date: '2021-08-20'
+                          lcp_expiry_date: '2022-08-20'
+                        - accep_no: N202100000155
+                          lcp_type_code: P
+                          lcp_type_name_en: Permit
+                          lcp_type_name_kh: លិខិតអនុញ្ញាត
+                          operation_name_en: Permit to Stop Doing Business for International Express Delivery Service
+                          operation_name_kh: ការអនុញ្ញាតឱ្យឈប់ធ្វើអាជីវកម្មបម្រើសេវាបញ្ញើឆាប់រហ័សអន្តរជាតិ
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100000184
+                          lcp_type_code: P
+                          lcp_type_name_en: Permit
+                          lcp_type_name_kh: លិខិតអនុញ្ញាត
+                          operation_name_en: Permit to Stop Doing Business for International Express Delivery Service
+                          operation_name_kh: ការអនុញ្ញាតឱ្យឈប់ធ្វើអាជីវកម្មបម្រើសេវាបញ្ញើឆាប់រហ័សអន្តរជាតិ
+                          application_status: REVIEWING
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100000414
+                          lcp_type_code: P
+                          lcp_type_name_en: Permit
+                          lcp_type_name_kh: លិខិតអនុញ្ញាត
+                          operation_name_en: Retail of Software
+                          operation_name_kh: ការលក់គ្រឿងសូហ្វវែរ
+                          application_status: REVIEWING
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100000508
+                          lcp_type_code: L
+                          lcp_type_name_en: License
+                          lcp_type_name_kh: អាជ្ញាបណ្ណ
+                          operation_name_en: International Express Delivery Licensing
+                          operation_name_kh: ការផ្ដល់អាជ្ញាបណ្ណសេវាបញ្ញើឆាប់រហ័សអន្តរជាតិ
+                          application_status: COMPLETED
+                          is_lcp_issued: true
+                          lcp_issued_date: '2021-08-30'
+                          lcp_expiry_date: '2022-08-30'
+                        - accep_no: N202100001033
+                          lcp_type_code: C
+                          lcp_type_name_en: Certificate
+                          lcp_type_name_kh: វិញ្ញាបនបត្រ
+                          operation_name_en: Online Service
+                          operation_name_kh: សេវាអនឡាញ
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100001046
+                          lcp_type_code: C
+                          lcp_type_name_en: Certificate
+                          lcp_type_name_kh: វិញ្ញាបនបត្រ
+                          operation_name_en: Type Approval of ICT Products
+                          operation_name_kh: ការទទួលស្គាល់យថាប្រភេទនៃឧបករណ៍អេឡិចត្រូនិក​ដែលបំពាក់បច្ចេកវិទ្យាគមនាគមន៍​និ​ងព័ត៌មាន
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100001554
+                          lcp_type_code: C
+                          lcp_type_name_en: Certificate
+                          lcp_type_name_kh: វិញ្ញាបនបត្រ
+                          operation_name_en: Online Service
+                          operation_name_kh: សេវាអនឡាញ
+                          application_status: REVIEWING
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100001541
+                          lcp_type_code: C
+                          lcp_type_name_en: Certificate
+                          lcp_type_name_kh: វិញ្ញាបនបត្រ
+                          operation_name_en: Software Development
+                          operation_name_kh: ការផលិតសូហ្វវែរ
+                          application_status: REVIEWING
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100001570
+                          lcp_type_code: P
+                          lcp_type_name_en: Permit
+                          lcp_type_name_kh: លិខិតអនុញ្ញាត
+                          operation_name_en: Permit to Open a Branch for International Express Delivery Service
+                          operation_name_kh: ការអនុញ្ញាតឱ្យបើកសាខាធ្វើអាជីវកម្មបម្រើសេវាបញ្ញើឆាប់រហ័សអន្តរជាតិ
+                          application_status: REVIEWING
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100001648
+                          lcp_type_code: L
+                          lcp_type_name_en: License
+                          lcp_type_name_kh: អាជ្ញាបណ្ណ
+                          operation_name_en: Assembly of ICT Products
+                          operation_name_kh: ការផ្គុំ ឧបករណ៍អេឡិចត្រូនិក​ដែលបំពាក់បច្ចេកវិទ្យាគមនាគមន៍​និ​ងព័ត៌មាន​ជាលក្ខណៈឧស្សាហកម្ម
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100001635
+                          lcp_type_code: L
+                          lcp_type_name_en: License
+                          lcp_type_name_kh: អាជ្ញាបណ្ណ
+                          operation_name_en: Establishment and Business Operation of Data Center
+                          operation_name_kh: ការបង្កើត និងធ្វើអាជីវកម្មមជ្ឈមណ្ឌលទិន្នន័យ
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100001651
+                          lcp_type_code: L
+                          lcp_type_name_en: License
+                          lcp_type_name_kh: អាជ្ញាបណ្ណ
+                          operation_name_en: Building of ICT Industry Park
+                          operation_name_kh: ការបង្កើតសួនឧស្សាហកម្មបច្ចេកវិទ្យាគមនាគមន៍​និងព័ត៌មាន
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100001790
+                          lcp_type_code: C
+                          lcp_type_name_en: Certificate
+                          lcp_type_name_kh: វិញ្ញាបនបត្រ
+                          operation_name_en: Export of Software
+                          operation_name_kh: ការនាំចេញសូហ្វវែរ
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100001787
+                          lcp_type_code: C
+                          lcp_type_name_en: Certificate
+                          lcp_type_name_kh: វិញ្ញាបនបត្រ
+                          operation_name_en: Software Development
+                          operation_name_kh: ការផលិតសូហ្វវែរ
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100001842
+                          lcp_type_code: L
+                          lcp_type_name_en: License
+                          lcp_type_name_kh: អាជ្ញាបណ្ណ
+                          operation_name_en: Production of Software
+                          operation_name_kh: ការផលិតសូហ្វវែរជាលក្ខណៈឧស្សាហកម្ម
+                          application_status: REVIEWING
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100002241
+                          lcp_type_code: C
+                          lcp_type_name_en: Certificate
+                          lcp_type_name_kh: វិញ្ញាបនបត្រ
+                          operation_name_en: Export of Computer Accessories
+                          operation_name_kh: ការនាំចេញគ្រឿងសម្ភារបរិក្ខាកុំព្យូទ័រ
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100002238
+                          lcp_type_code: C
+                          lcp_type_name_en: Certificate
+                          lcp_type_name_kh: វិញ្ញាបនបត្រ
+                          operation_name_en: Consultation on ICT
+                          operation_name_kh: ការផ្ដល់សេវាប្រឹក្សា និងសេវាបច្ចេកទេសផ្នែកបច្ចេកវិទ្យាគមនាគមន៍​និងព័ត៌មាន
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100002225
+                          lcp_type_code: C
+                          lcp_type_name_en: Certificate
+                          lcp_type_name_kh: វិញ្ញាបនបត្រ
+                          operation_name_en: Assembly of Computer Accessories
+                          operation_name_kh: ការដំឡើងគ្រឿងសម្ភារបរិក្ខាកុំព្យូទ័រ
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100002296
+                          lcp_type_code: C
+                          lcp_type_name_en: Certificate
+                          lcp_type_name_kh: វិញ្ញាបនបត្រ
+                          operation_name_en: Online Service
+                          operation_name_kh: សេវាអនឡាញ
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100002306
+                          lcp_type_code: C
+                          lcp_type_name_en: Certificate
+                          lcp_type_name_kh: វិញ្ញាបនបត្រ
+                          operation_name_en: Export of Software
+                          operation_name_kh: ការនាំចេញសូហ្វវែរ
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+                        - accep_no: N202100002283
+                          lcp_type_code: C
+                          lcp_type_name_en: Certificate
+                          lcp_type_name_kh: វិញ្ញាបនបត្រ
+                          operation_name_en: Consultation on ICT
+                          operation_name_kh: ការផ្ដល់សេវាប្រឹក្សា និងសេវាបច្ចេកទេសផ្នែកបច្ចេកវិទ្យាគមនាគមន៍​និងព័ត៌មាន
+                          application_status: SUBMITTED
+                          is_lcp_issued: false
+                          lcp_issued_date: null
+                          lcp_expiry_date: null
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      single_id: string
+                      company_name_en: string
+                      company_name_kh: string
+                      licenses:
+                        - license_type:
+                            code: string
+                          request_no: string
+                          services:
+                            - code: string
+                          status: string
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security:
+        - CamDigiKey-JWT: []
+      description: Get application by SingleId/MOC Registration Number
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+  '/application/api/v1/lcp/{single-id}/timeline/{accepNo}':
+    get:
+      tags:
+        - applications
+      summary: Get applications timeline (histories)
+      operationId: getApplicationsTimeline
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      single_id:
+                        type: string
+                      company_name_en:
+                        type: string
+                      company_name_kh:
+                        type: string
+                      accep_no:
+                        type: string
+                      timelines:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            actor_en:
+                              type: string
+                            actor_kh:
+                              type: string
+                            action_en:
+                              type: string
+                            action_kh:
+                              type: string
+                            action_date_time:
+                              type: string
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: Successfully
+                    data:
+                      single_id: '5010014591'
+                      company_name_en: DERM DOUNG
+                      company_name_kh: ដើមដូង
+                      accep_no: N202100000045
+                      timelines:
+                        - actor_en: Applicant
+                          actor_kh: អ្នកស្នើសុំ
+                          action_en: Draft
+                          action_kh: ពង្រៀង
+                          action_date_time: '2021-08-19 15:31:22'
+                        - actor_en: Applicant
+                          actor_kh: អ្នកស្នើសុំ
+                          action_en: Submitted
+                          action_kh: បានដាក់ពាក្យ
+                          action_date_time: '2021-08-19 15:33:00'
+                        - actor_en: Officer
+                          actor_kh: មន្ត្រី
+                          action_en: Approved
+                          action_kh: បានទទួលពាក្យ
+                          action_date_time: '2021-08-19 16:40:45'
+                        - actor_en: Chief of Office
+                          actor_kh: ប្រធានការិយាល័យ
+                          action_en: Approved
+                          action_kh: បានពិនិត្យ
+                          action_date_time: '2021-08-19 16:42:00'
+                        - actor_en: Director of Department
+                          actor_kh: ប្រធាននាយកដ្ឋាន
+                          action_en: Approved
+                          action_kh: បានឯកភាព
+                          action_date_time: '2021-08-19 16:45:32'
+                        - actor_en: Deputy General Director
+                          actor_kh: អគ្គនាយករង
+                          action_en: Approved
+                          action_kh: បានឯកភាព
+                          action_date_time: '2021-08-19 16:49:47'
+                        - actor_en: General Director
+                          actor_kh: អគ្គនាយក
+                          action_en: Approved
+                          action_kh: បានឯកភាព
+                          action_date_time: '2021-08-19 16:52:13'
+                        - actor_en: Under Secretary of State
+                          actor_kh: អនុរដ្ឋលេខាធិការ
+                          action_en: Approved
+                          action_kh: បានឯកភាព
+                          action_date_time: '2021-08-19 16:54:43'
+                        - actor_en: Secretary of State
+                          actor_kh: រដ្ឋលេខាធិការ
+                          action_en: Approved
+                          action_kh: បានឯកភាព
+                          action_date_time: '2021-08-19 16:56:11'
+                        - actor_en: Minister
+                          actor_kh: រដ្ឋមន្ត្រី
+                          action_en: Approved
+                          action_kh: បានអនុម័ត
+                          action_date_time: '2021-08-19 16:57:19'
+                        - actor_en: Applicant
+                          actor_kh: អ្នកស្នើសុំ
+                          action_en: Paid
+                          action_kh: បានទូទាត់ប្រាក់
+                          action_date_time: '2021-08-19 17:20:39'
+                        - actor_en: Officer
+                          actor_kh: មន្ត្រី
+                          action_en: Printed License
+                          action_kh: បានបោះពុម្ពអាជ្ញាបណ្ណ
+                          action_date_time: '2021-08-19 17:58:50'
+                        - actor_en: Officer
+                          actor_kh: មន្ត្រី
+                          action_en: Uploaded (Completed)
+                          action_kh: បានអាប់ឡូដបញ្ចូលវិញ (រួចរាល់)
+                          action_date_time: '2021-08-19 18:01:39'
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      single_id: string
+                      company_name_en: string
+                      company_name_kh: string
+                      request_no: string
+                      timelines:
+                        - title_en: string
+                          title_kh: string
+                          description_en: string
+                          description_kh: string
+                          event_date_time: string
+      description: Get applications timeline (histories)
+      security:
+        - CamDigiKey-JWT: []
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        description: Single ID
+      - schema:
+          type: string
+        name: accepNo
+        in: path
+        description: Application Form Number
+  '/application/api/v1/lcp/details/{single-id}/info/{accepNo}':
+    get:
+      tags:
+        - applications
+      summary: Get application detail
+      operationId: getApplicationDetail
+      parameters: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1: {}
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      company_data:
+                        type: object
+                        properties:
+                          single_id:
+                            type: string
+                          company_name_en:
+                            type: string
+                          company_name_kh:
+                            type: string
+                          tax_registration_number:
+                            type: string
+                          company_activities:
+                            type: string
+                          total_employees:
+                            type: integer
+                          province_code:
+                            type: string
+                          province_name_en:
+                            type: string
+                          province_name_kh:
+                            type: string
+                          district_code:
+                            type: string
+                          district_name_en:
+                            type: string
+                          district_name_kh:
+                            type: string
+                          commune_code:
+                            type: string
+                          commune_name_en:
+                            type: string
+                          commune_name_kh:
+                            type: string
+                          village_code:
+                            type: string
+                          village_name_en:
+                            type: string
+                          village_name_kh:
+                            type: string
+                          address_detail_en:
+                            type: string
+                          address_detail_kh:
+                            type: string
+                          is_register_via_obr:
+                            type: boolean
+                          use_obr_business_address:
+                            type: boolean
+                      biz_owner_data:
+                        type: object
+                        properties:
+                          identity_no:
+                            type: string
+                          identity_type:
+                            type: string
+                          first_name_en:
+                            type: string
+                          first_name_kh:
+                            type: string
+                          last_name_en:
+                            type: string
+                          last_name_kh:
+                            type: string
+                          gender:
+                            type: string
+                          nationality_code:
+                            type: string
+                          nationality_name_en:
+                            type: string
+                          nationality_name_kh:
+                            type: string
+                          date_of_birth:
+                            type: string
+                          career:
+                            type: string
+                          position:
+                            type: string
+                          phone_number:
+                            type: string
+                          email:
+                            type: string
+                          is_local_address:
+                            type: boolean
+                          province_code:
+                            type: string
+                          province_name_en:
+                            type: string
+                          province_name_kh:
+                            type: string
+                          district_code:
+                            type: string
+                          district_name_en:
+                            type: string
+                          district_name_kh:
+                            type: string
+                          commune_code:
+                            type: string
+                          commune_name_en:
+                            type: string
+                          commune_name_kh:
+                            type: string
+                          village_code:
+                            type: string
+                          village_name_en:
+                            type: string
+                          village_name_kh:
+                            type: string
+                          house_no:
+                            type: string
+                          street_no:
+                            type: string
+                          foreign_address_country_code:
+                            type: 'null'
+                          foreign_address_detail:
+                            type: 'null'
+                      supporting_docs:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            doc_uid:
+                              type: string
+                            doc_type_en:
+                              type: string
+                            doc_type_kh:
+                              type: string
+                      application_data:
+                        type: object
+                        properties:
+                          accep_no:
+                            type: string
+                          lcp_type_code:
+                            type: string
+                          lcp_type_name_en:
+                            type: string
+                          lcp_type_name_kh:
+                            type: string
+                          operation_name_en:
+                            type: string
+                          operation_name_kh:
+                            type: string
+                          submitted_date_time:
+                            type: string
+                          application_status:
+                            type: string
+                          action_date_time:
+                            type: string
+                          payment_status:
+                            type: string
+                      register_by:
+                        type: object
+                        properties:
+                          full_name_en:
+                            type: string
+                          full_name_kh:
+                            type: string
+                          phone_no:
+                            type: string
+                          email:
+                            type: string
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: Successfully
+                    data:
+                      company_data:
+                        single_id: '5010014591'
+                        company_name_en: DERM DOUNG
+                        company_name_kh: ដើមដូង
+                        tax_registration_number: '667788'
+                        company_activities: |
+                          ជំនួញលក់ដុំដោយមិនមានឯកទេស ( ការលក់ដុំសម្រាប់ទំនិញទូទៅ ការលក់ដុំទំនិញច្រើនប្រភេទ​ដោយមិនមានឯកទេសណាមួយ )
+                        total_employees: 0
+                        province_code: '20'
+                        province_name_en: Svay Rieng
+                        province_name_kh: ស្វាយរៀង
+                        district_code: '05'
+                        district_name_en: Svay Chrum
+                        district_name_kh: ស្វាយជ្រំ
+                        commune_code: '07'
+                        commune_name_en: Chheu Teal
+                        commune_name_kh: ឈើទាល
+                        village_code: '02'
+                        village_name_en: Traok
+                        village_name_kh: ត្រោក
+                        address_detail_en: '#567, St.123'
+                        address_detail_kh: ផ្ទះលេខ ៥៦៧ ផ្លូវ ១២៣
+                        is_register_via_obr: false
+                        use_obr_business_address: false
+                      biz_owner_data:
+                        identity_no: KH76323879
+                        identity_type: ID_CARD
+                        first_name_en: TITHROTTANAK
+                        first_name_kh: ទិត្យរនៈ
+                        last_name_en: YOU
+                        last_name_kh: យូ
+                        gender: MALE
+                        nationality_code: KH
+                        nationality_name_en: Cambodia
+                        nationality_name_kh: កម្ពុជា
+                        date_of_birth: '2004-01-02'
+                        career: មន្ត្រីរាជការ
+                        position: ប្រធានផ្នែកបុគ្គលិក
+                        phone_number: +855 81 738 999
+                        email: tith.rottanak@gmail.com
+                        is_local_address: true
+                        province_code: '19'
+                        province_name_en: Stung Treng
+                        province_name_kh: ស្ទឹងត្រែង
+                        district_code: '01'
+                        district_name_en: Sesan
+                        district_name_kh: សេសាន
+                        commune_code: '02'
+                        commune_name_en: Kbal Romeas
+                        commune_name_kh: ក្បាលរមាស
+                        village_code: '02'
+                        village_name_en: Srae Sranok
+                        village_name_kh: ស្រែស្រណុក
+                        house_no: '66'
+                        street_no: '555'
+                        foreign_address_country_code: null
+                        foreign_address_detail: null
+                      supporting_docs:
+                        - doc_uid: f9c070dd-1cd8-4fe1-8a62-1f0c447c38af
+                          doc_type_en: Tax List Certificates
+                          doc_type_kh: វិញ្ញាបនបត្របញ្ជីពន្ធដារ
+                        - doc_uid: 09e4b85d-44b9-4cda-9fb9-33094fee80c4
+                          doc_type_en: Location Rental Contract or  Certificate of Real-Estate Owner
+                          doc_type_kh: កិច្ចសន្យាជួលទីស្នាក់ការក្រុមហ៊ុន ឬ វិញ្ញាបនបត្រសម្គាល់ម្ចាស់អចលនវត្ថុ
+                        - doc_uid: 08f76149-11d3-41cb-adfa-67b72fd7d2c9
+                          doc_type_en: Association
+                          doc_type_kh: លក្ខន្តិកៈក្រុមហ៊ុន
+                        - doc_uid: 1d29ec99-0600-4857-89d2-6e0481937b24
+                          doc_type_en: ID Card/Passport
+                          doc_type_kh: អត្តសញ្ញាណប័ណ្ណ ឬ លិខិតឆ្លងដែន
+                        - doc_uid: d8d6d801-dc77-4170-9970-8d9d39c35931
+                          doc_type_en: Incorporation
+                          doc_type_kh: វិញ្ញាបនបត្រ បញ្ចាក់ការចុះឈ្មោះក្នុងបញ្ចីពាណិជ្ជកម្ម
+                        - doc_uid: f70407be-80c1-476f-bf4f-c84b7bbf3270
+                          doc_type_en: Patent Tax Cards
+                          doc_type_kh: ប័ណ្ណពន្ធប៉ាតង់​ឆ្នាំចុងក្រោយ
+                      application_data:
+                        accep_no: N202100000045
+                        lcp_type_code: L
+                        lcp_type_name_en: License
+                        lcp_type_name_kh: អាជ្ញាបណ្ណ
+                        operation_name_en: International Express Delivery Licensing
+                        operation_name_kh: ការផ្ដល់អាជ្ញាបណ្ណសេវាបញ្ញើឆាប់រហ័សអន្តរជាតិ
+                        submitted_date_time: '2021-08-19 15:33:00'
+                        application_status: COMPLETED
+                        action_date_time: '2021-08-19 18:01:39'
+                        payment_status: LCP_FEE_PAID
+                      register_by:
+                        full_name_en: Hor Pranet
+                        full_name_kh: ហោ ប្រណីត
+                        phone_no: '+85516282977'
+                        email: hor.pranet@gmail.com
+      description: Get application detail
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+      - schema:
+          type: string
+        name: accepNo
+        in: path
+        required: true
+        description: Application Form Number
+  '/application/api/v1/lcp/details/{single-id}/info/{accepNo}/document/{docUid}':
+    get:
+      tags:
+        - applications
+      summary: Get License Supporting Docs
+      operationId: getApplicationSupportingDocument
+      parameters: []
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      supporting_doc:
+                        type: string
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: Successfully
+                    data:
+                      supporting_doc: JVBERi0xLjcNCiW1tbW1DQoxIDAgb2JqDQo8PC9UeXBlL0NhdGFsb2cvUGFnZXMgMiAwIFIvTGFuZyhlbi1VUykgL1N0cnVjdFRyZWVSb290IDE1IDAgUi9NYXJrSW5mbzw8L01hcmtlZCB0cnVlPj4vTWV0YWRhdGEgMzAgMCBSL1ZpZXdlclByZWZlcmVuY2VzIDMxIDAgUj4+DQplbmRvYmoNCjIgMCBvYmoNCjw8L1R5cGUvUGFnZXMvQ291bnQgMS9LaWRzWyAzIDAgUl0gPj4NCmVuZG9iag0KMyAwIG9iag0KPDwvVHlwZS9QYWdlL1BhcmVudCAyIDAgUi9SZXNvdXJjZXM8PC9Gb250PDwvRjEgNSAwIFIvRjIgOSAwIFI+Pi9FeHRHU3RhdGU8PC9HUzcgNyAwIFIvR1M4IDggMCBSPj4vUHJvY1NldFsvUERGL1RleHQvSW1hZ2VCL0ltYWdlQy9JbWFnZUldID4+L01lZGlhQm94WyAwIDAgNjEyIDc5Ml0gL0NvbnRlbnRzIDQgMCBSL0dyb3VwPDwvVHlwZS9Hcm91cC9TL1RyYW5zcGFyZW5jeS9DUy9EZXZpY2VSR0I+Pi9UYWJzL1MvU3RydWN0UGFyZW50cyAwPj4NCmVuZG9iag0KNCAwIG9iag0KPDwvRmlsdGVyL0ZsYXRlRGVjb2RlL0xlbmd0aCAzMDc+Pg0Kc3RyZWFtDQp4nK2STUsDMRCG74H8hzm2hc1mZjPZBJaA3daqtaB2wYN46MH2IC1a/z+YrG1RqYJbA/lgvvK8yUB+A1WVz+rLEegQYDiq4VUKrXQaHgk02LiWnmD7JMX9ADZSDBsp8nMEctAspcAYpAGh0FYhWMcKS2jWMWYyL2H1lupRKrVf2cN21brdD+67iRQPPeg/QnMlxTjedysFjGc1wCdi/CdiQuW5JT4O2pWPdnwIsQgWrAwDG1LMUBhUBTCqD8rl4JA+f1lsDhWK/HqxWUHveZ1NL/p/lEvf5e4R2HXSW2kyY03WayIb2LlKo3MhY8fJZePkdkcfQwyGzOzsxAGpSOEcMjQUzfYsECa3a9PQo8bhKJ7r8OVRO4s1pVXlKWK1xvD7/5pT+884k+C6Mh5twHfoML8qDQplbmRzdHJlYW0NCmVuZG9iag0KNSAwIG9iag0KPDwvVHlwZS9Gb250L1N1YnR5cGUvVHJ1ZVR5cGUvTmFtZS9GMS9CYXNlRm9udC9CQ0RFRUUrS2htZXJPU011b2xMaWdodC9FbmNvZGluZy9XaW5BbnNpRW5jb2RpbmcvRm9udERlc2NyaXB0b3IgNiAwIFIvRmlyc3RDaGFyIDMyL0xhc3RDaGFyIDMyL1dpZHRocyAyNSAwIFI+Pg0KZW5kb2JqDQo2IDAgb2JqDQo8PC9UeXBlL0ZvbnREZXNjcmlwdG9yL0ZvbnROYW1lL0JDREVFRStLaG1lck9TTXVvbExpZ2h0L0ZsYWdzIDMyL0l0YWxpY0FuZ2xlIDkvQXNjZW50IDEyMjEvRGVzY2VudCAtNTg2L0NhcEhlaWdodCAxMjIxL0F2Z1dpZHRoIDQ0MS9NYXhXaWR0aCAzNzAyL0ZvbnRXZWlnaHQgNDAwL1hIZWlnaHQgMjUwL0xlYWRpbmcgMTgvU3RlbVYgNDQvRm9udEJCb3hbIC0xMTI0IC01ODYgMjU3OCAxMjIxXSAvRm9udEZpbGUyIDI2IDAgUj4+DQplbmRvYmoNCjcgMCBvYmoNCjw8L1R5cGUvRXh0R1N0YXRlL0JNL05vcm1hbC9jYSAxPj4NCmVuZG9iag0KOCAwIG9iag0KPDwvVHlwZS9FeHRHU3RhdGUvQk0vTm9ybWFsL0NBIDE+Pg0KZW5kb2JqDQo5IDAgb2JqDQo8PC9UeXBlL0ZvbnQvU3VidHlwZS9UeXBlMC9CYXNlRm9udC9CQ0RGRUUrS2htZXJPU011b2xMaWdodC9FbmNvZGluZy9JZGVudGl0eS1IL0Rlc2NlbmRhbnRGb250cyAxMCAwIFIvVG9Vbmljb2RlIDI3IDAgUj4+DQplbmRvYmoNCjEwIDAgb2JqDQpbIDExIDAgUl0gDQplbmRvYmoNCjExIDAgb2JqDQo8PC9CYXNlRm9udC9CQ0RGRUUrS2htZXJPU011b2xMaWdodC9TdWJ0eXBlL0NJREZvbnRUeXBlMi9UeXBlL0ZvbnQvQ0lEVG9HSURNYXAvSWRlbnRpdHkvRFcgMTAwMC9DSURTeXN0ZW1JbmZvIDEyIDAgUi9Gb250RGVzY3JpcHRvciAxMyAwIFIvVyAyOSAwIFI+Pg0KZW5kb2JqDQoxMiAwIG9iag0KPDwvT3JkZXJpbmcoSWRlbnRpdHkpIC9SZWdpc3Ry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OV0gIDU4MVsgODc5IDg3OV0gIDU4NFsgODc5XSAgNTg4WyA0MzldICA1OTBbIDg3OV0gIDYxN1sgMCAwXSBdIA0KZW5kb2JqDQozMCAwIG9iag0KPDwvVHlwZS9NZXRhZGF0YS9TdWJ0eXBlL1hNTC9MZW5ndGggMzA4Nz4+DQpzdHJlYW0NCjw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+PHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iMy4xLTcwMSI+CjxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CjxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiICB4bWxuczpwZGY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vcGRmLzEuMy8iPgo8cGRmOlByb2R1Y2VyPk1pY3Jvc29mdMKuIFdvcmQgZm9yIE1pY3Jvc29mdCAzNjU8L3BkZjpQcm9kdWNlcj48L3JkZjpEZXNjcmlwdGlvbj4KPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyI+CjxkYzpjcmVhdG9yPjxyZGY6U2VxPjxyZGY6bGk+U29rcGhhdGggTHk8L3JkZjpsaT48L3JkZjpTZXE+PC9kYzpjcmVhdG9yPjwvcmRmOkRlc2NyaXB0aW9uPgo8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIj4KPHhtcDpDcmVhdG9yVG9vbD5NaWNyb3NvZnTCriBXb3JkIGZvciBNaWNyb3NvZnQgMzY1PC94bXA6Q3JlYXRvclRvb2w+PHhtcDpDcmVhdGVEYXRlPjIwMjEtMDEtMjhUMTQ6NDQ6MTkrMDc6MDA8L3htcDpDcmVhdGVEYXRlPjx4bXA6TW9kaWZ5RGF0ZT4yMDIxLTAxLTI4VDE0OjQ0OjE5KzA3OjAwPC94bXA6TW9kaWZ5RGF0ZT48L3JkZjpEZXNjcmlwdGlvbj4KPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIj4KPHhtcE1NOkRvY3VtZW50SUQ+dXVpZDo0MThGNTA2QS1CMUU3LTQ0NjctOUNCNC02NzU0MkM0NkRBMjk8L3htcE1NOkRvY3VtZW50SUQ+PHhtcE1NOkluc3RhbmNlSUQ+dXVpZDo0MThGNTA2QS1CMUU3LTQ0NjctOUNCNC02NzU0MkM0NkRBMjk8L3htcE1NOkluc3RhbmNlSUQ+PC9yZGY6RGVzY3JpcHRpb24+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo8L3JkZjpSREY+PC94OnhtcG1ldGE+PD94cGFja2V0IGVuZD0idyI/Pg0KZW5kc3RyZWFtDQplbmRvYmoNCjMxIDAgb2JqDQo8PC9EaXNwbGF5RG9jVGl0bGUgdHJ1ZT4+DQplbmRvYmoNCjMyIDAgb2JqDQo8PC9UeXBlL1hSZWYvU2l6ZSAzMi9XWyAxIDQgMl0gL1Jvb3QgMSAwIFIvSW5mbyAxNCAwIFIvSURbPDZBNTA4RjQxRTdCMTY3NDQ5Q0I0Njc1NDJDNDZEQTI5Pjw2QTUwOEY0MUU3QjE2NzQ0OUNCNDY3NTQyQzQ2REEyOT5dIC9GaWx0ZXIvRmxhdGVEZWNvZGUvTGVuZ3RoIDEyMj4+DQpzdHJlYW0NCnicY2AAgv//GYGkIAMDiFoGoe6BKcb3YIo5B0yxyIApVmUIFQGhesEUmySEModQD8AUuxaY4jBiYGACminGwAKhWCEUG4Rih1DMEAqqkgOoj9MdxmOEUExAQa4PYDO5ucGU2k4wpRENpnw+gSnfRWAqioWBAQCNbg42DQplbmRzdHJlYW0NCmVuZG9iag0KeHJlZg0KMCAzMw0KMDAwMDAwMDAxNSA2NTUzNSBmDQowMDAwMDAwMDE3IDAwMDAwIG4NCjAwMDAwMDAxNjYgMDAwMDAgbg0KMDAwMDAwMDIyMiAwMDAwMCBuDQowMDAwMDAwNDk1IDAwMDAwIG4NCjAwMDAwMDA4NzYgMDAwMDAgbg0KMDAwMDAwMTA1MiAwMDAwMCBuDQowMDAwMDAxMzE1IDAwMDAwIG4NCjAwMDAwMDEzNjggMDAwMDAgbg0KMDAwMDAwMTQyMSAwMDAwMCBuDQowMDAwMDAxNTYxIDAwMDAwIG4NCjAwMDAwMDE1OTEgMDAwMDAgbg0KMDAwMDAwMTc2MCAwMDAwMCBuDQowMDAwMDAxODM0IDAwMDAwIG4NCjAwMDAwMDIwOTggMDAwMDAgbg0KMDAwMDAwMDAxNiA2NTUzNSBmDQowMDAwMDAwMDE3IDY1NTM1IGYNCjAwMDAwMDAwMTggNjU1MzUgZg0KMDAwMDAwMDAxOSA2NTUzNSBmDQowMDAwMDAwMDIwIDY1NTM1IGYNCjAwMDAwMDAwMjEgNjU1MzUgZg0KMDAwMDAwMDAyMiA2NTUzNSBmDQowMDAwMDAwMDIzIDY1NTM1IGYNCjAwMDAwMDAwMjQgNjU1MzUgZg0KMDAwMDAwMDAwMCA2NTUzNSBmDQowMDAwMDAyODAwIDAwMDAwIG4NCjAwMDAwMDI4MjcgMDAwMDAgbg0KMDAwMDAwOTkxMyAwMDAwMCBuDQowMDAwMDEwMzMxIDAwMDAwIG4NCjAwMDAwMTk2OTggMDAwMDAgbg0KMDAwMDAxOTg3NCAwMDAwMCBuDQowMDAwMDIzMDQ0IDAwMDAwIG4NCjAwMDAwMjMwODkgMDAwMDAgbg0KdHJhaWxlcg0KPDwvU2l6ZSAzMy9Sb290IDEgMCBSL0luZm8gMTQgMCBSL0lEWzw2QTUwOEY0MUU3QjE2NzQ0OUNCNDY3NTQyQzQ2REEyOT48NkE1MDhGNDFFN0IxNjc0NDlDQjQ2NzU0MkM0NkRBMjk+XSA+Pg0Kc3RhcnR4cmVmDQoyMzQxMg0KJSVFT0YNCnhyZWYNCjAgMA0KdHJhaWxlcg0KPDwvU2l6ZSAzMy9Sb290IDEgMCBSL0luZm8gMTQgMCBSL0lEWzw2QTUwOEY0MUU3QjE2NzQ0OUNCNDY3NTQyQzQ2REEyOT48NkE1MDhGNDFFN0IxNjc0NDlDQjQ2NzU0MkM0NkRBMjk+XSAvUHJldiAyMzQxMi9YUmVmU3RtIDIzMDg5Pj4NCnN0YXJ0eHJlZg0KMjQyMjkNCiUlRU9G
+      description: Get application supporting document
+      security:
+        - CamDigiKey-JWT: []
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+      - schema:
+          type: string
+        name: accepNo
+        in: path
+        required: true
+        description: Application Form Number
+      - schema:
+          type: string
+        name: docUid
+        in: path
+        required: true
+        description: Doc Uid

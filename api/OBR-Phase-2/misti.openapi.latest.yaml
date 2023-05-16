@@ -1,0 +1,1065 @@
+openapi: 3.1.0
+info:
+  title: MISTI
+  version: 1.0.0
+  description: "## \U0001F4AB Overview\n\nThis document is about data exchange and integration between SME License Registration (SMELR) with Online Business Registration (OBR). Both systems will using RESTful web service to exchange data in json format.\n\nInorder to get data from SMELR system, OBR must request to SMELR with payload format, which is set by SMELR.\nSMELR provide only pull mechanism. Once received data from SMELR, OBR can display information realtime to user or save into their system base on actual usecase. Authentication and authorization are needed during transmit data between systems. Also data is securely exchange throught CamDx Platform. \n\n### \U0001F9F0 Authentication\nFor security reason, authentication mechanism is significant while exchange data via web service between Consumer’s system and SMELR system. Comsumer’s system must attach CamDigiKey Organization Access Token in the HTTP request header during request to Consumer’s endpoint.\n\n\n### Code Mapping\n<table cellspacing=\"0\" cellpadding=\"0\" border=\"1\">\n  <tbody>\n    <tr>\n      <td> Code Type </td>\n      <td> Code </td>\n      <td> Khmer Definition </td>\n      <td> English Definition </td>\n      <td> Remarks </td>\n    </tr>\n    <tr>\n      <td rowspan=\"3\">\n        <p align=\"center\"> License Types\n      </td>\n      <td> 1 </td>\n      <td> សហគ្រាសធុនតូច </td>\n      <td> Small enterprise </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> 2 </td>\n      <td> រោងចក្រធុនមធ្យម </td>\n      <td> Medium factory </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> 3 </td>\n      <td> សិប្បកម្ម </td>\n      <td> Handicraft </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td rowspan=\"7\">\n        <p align=\"center\"> Application Status\n      </td>\n      <td> DRAFT </td>\n      <td> ពង្រៀង </td>\n      <td> Draft </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> SUBMITTED </td>\n      <td> បានដាក់ស្នើ </td>\n      <td> Submitted </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> REVIEWING </td>\n      <td> កំពុងត្រួតពិនិត្យ </td>\n      <td> Reviewing </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> RETURNED </td>\n      <td> បញ្ជូនត្រឡប់ </td>\n      <td> Returned </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> REJECTED </td>\n      <td> ច្រានចោល </td>\n      <td> Rejected </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> APPROVED </td>\n      <td> អនុម័ត </td>\n      <td> Approved </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> EXPIRED </td>\n      <td> ផុតកំណត់ </td>\n      <td> Expired </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td rowspan=\"3\">\n        <p align=\"center\"> Payment Status\n      </td>\n      <td> PAYMENT_ACCEPTED </td>\n      <td> ការទូទាត់ប្រាក់បានទទួល </td>\n      <td> Payment accecpted </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> PAYMENT_EXPIRED </td>\n      <td> ការទូទាត់ប្រាក់បានផុតកំណត់ </td>\n      <td> Payment expired </td>\n      <td></td>\n    </tr>\n    <tr>\n      <td> PENDING_PAYMENT </td>\n      <td> ការទូទាត់ប្រាក់កំពុងស្ថិតនៅក្នុងរង់ចាំ </td>\n      <td> Payment is pending </td>\n      <td></td>\n    </tr>\n  </tbody>\n</table>"
+  contact:
+    name: CamDX Team
+    email: camdx@mef.gov.kh
+    url: 'https://www.camdx.gov.kh'
+  license:
+    name: MIT
+    url: 'https://spdx.org/licenses/MIT'
+  termsOfService: 'https://www.camdx.gov.kh/#contact'
+  summary: 'Ministry of Industry, Science, Technology & Innovation''s Open API'
+servers:
+  - url: 'https://catalog-dev.camdx.gov.kh'
+    description: Development
+  - url: 'https://ss.camdx.gov.kh'
+    description: Production
+components:
+  securitySchemes:
+    CamDigiKey-JWT:
+      type: http
+      scheme: bearer
+      description: Organization level’s token which generate from CamDigiKey.
+tags:
+  - name: statistics
+    description: Number of statistic
+  - name: applications
+    description: Everything about your application
+paths:
+  /r1/CAMBODIA/GOV/CAMDX-000019/MISTI_REG_SYSTEM/getApplicationStatistic:
+    get:
+      tags:
+        - statistics
+      summary: Get application statistic
+      operationId: getApplicationStatistic
+      parameters:
+        - schema:
+            type: string
+            default: '2020-09-01'
+          in: query
+          name: startDate
+          required: true
+          description: 'License last modified date (start from), (“yyyy-MM-dd”)'
+        - schema:
+            type: string
+            default: '2022-12-31'
+          in: query
+          description: 'License last modified date (to), (“yyyy-MM-dd”)'
+          name: endDate
+          required: true
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-000002/OBR
+          in: header
+          name: X-Road-Client
+          description: X-Road Client Header
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      number_of_approved: 0
+                      number_of_draft: 0
+                      number_of_expired: 0
+                      number_of_rejected: 0
+                      number_of_returned: 0
+                      number_of_reviewing: 0
+                      number_of_submitted: 0
+                      total_number_of_all_license: 0
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    status: 1
+                    message: Success
+                    data:
+                      - _id:
+                          _id: 62708acf89648886fecb40c5
+                          country_code: KH
+                          nationality_kh: ខ្មែរ
+                          nationality_en: Cambodian
+                          gdt_id: 30
+                          name_en: Cambodia
+                          name_kh: កម្ពុជា
+                          createdAt: '2022-05-03T01:52:15.219Z'
+                          updatedAt: '2022-05-03T01:52:15.219Z'
+                          __v: 0
+                        total: 110
+                        total_male: 69
+                        total_female: 41
+                properties:
+                  code:
+                    type: integer
+                    description: |
+                      Response code: 1: Successfully, 0: Not found, -1: Internal Server Error
+                  message:
+                    type: string
+                    description: 'Response message  '
+                  data:
+                    type: object
+                    description: Return list of company statistic
+                    properties:
+                      number_of_approved:
+                        type: integer
+                        description: Number of approved application
+                      number_of_draft:
+                        type: integer
+                        description: Number of draft application
+                      number_of_expired:
+                        type: integer
+                        description: Number of expired application
+                      number_of_rejected:
+                        type: integer
+                        description: Number of rejected application
+                      number_of_returned:
+                        type: integer
+                        description: Number of returned application
+                      number_of_reviewing:
+                        type: integer
+                        description: Number of reviewing application
+                      number_of_submitted:
+                        type: integer
+                        description: Number of submitted application
+                      total_number_of_all_license:
+                        type: integer
+                        description: Total number of all application
+          headers: {}
+      description: Get application statistic
+      security:
+        - CamDigiKey-JWT: []
+      x-internal: false
+    parameters: []
+  /r1/CAMBODIA/GOV/CAMDX-000019/MISTI_REG_SYSTEM/getApplicationBizOwner:
+    get:
+      tags:
+        - statistics
+      summary: Get biz-owner/manager statistic
+      operationId: getBizOwnerManagerStatistic
+      parameters:
+        - schema:
+            type: string
+            default: KH
+          in: query
+          name: nationalityCode
+          description: Nationality Code
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-000002/OBR
+          in: header
+          name: X-Road-Client
+          description: X-Road Client Header
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      nationality_code: string
+                      number_of_female_biz_owner: 0
+                      number_of_male_biz_owner: 0
+                      total_number_of_owner: 0
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    status: 1
+                    message: Success
+                    data:
+                      - _id:
+                          _id: 62708acf89648886fecb40c5
+                          country_code: KH
+                          nationality_kh: ខ្មែរ
+                          nationality_en: Cambodian
+                          gdt_id: 30
+                          name_en: Cambodia
+                          name_kh: កម្ពុជា
+                          createdAt: '2022-05-03T01:52:15.219Z'
+                          updatedAt: '2022-05-03T01:52:15.219Z'
+                          __v: 0
+                        total: 110
+                        total_male: 69
+                        total_female: 41
+                properties:
+                  code:
+                    type: integer
+                    description: |
+                      Response code: 1: Successfully, 0: Not found, -1: Internal Server Error
+                  message:
+                    type: string
+                    description: 'Response message  '
+                  data:
+                    type: object
+                    description: Return list of company statistic
+                    properties:
+                      nationality_code:
+                        type: string
+                        description: 'Nationality code (KH, US, UK, .....)'
+                      number_of_female_biz_owner:
+                        description: Number of female biz-owner or manager
+                        type: integer
+                      number_of_male_biz_owner:
+                        description: Number of male biz-owner or manager
+                        type: integer
+                      total_number_of_owner:
+                        description: Total number of biz-owner or manager
+                        type: integer
+      description: Get biz-owner/manager statistic
+      security:
+        - CamDigiKey-JWT: []
+      x-internal: false
+    parameters: []
+  /r1/CAMBODIA/GOV/CAMDX-000019/MISTI_REG_SYSTEM/getApplication:
+    get:
+      tags:
+        - applications
+      summary: Get all applications
+      operationId: getAllApplications
+      requestBody:
+        content: {}
+      parameters:
+        - name: searchTerm
+          in: query
+          schema:
+            type: string
+          description: 'Registraid_id, company_name …'
+        - name: license_type
+          in: query
+          schema:
+            type: integer
+          example: 1
+          description: Check table status Mapping
+        - name: applicationStatus
+          in: query
+          schema:
+            type: integer
+          example: 20
+          description: Check table status Mapping
+        - schema:
+            type: integer
+          in: query
+          name: page
+          description: Current page
+        - schema:
+            type: integer
+          in: query
+          name: size
+          description: Number of records
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-000002/OBR
+          in: header
+          name: X-Road-Client
+          description: X-Road Client Header
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    status: 1
+                    message: Success
+                    data:
+                      applications:
+                        - _id: 62ba6269c645a5316b6d8689
+                          __v: 0
+                          address:
+                            country_code: KH
+                            province_code: '03'
+                            district_code: '0303'
+                            commune_code: '030304'
+                            village_code: '03030402'
+                            house_number: '44'
+                            street_number: '34'
+                            postcode: null
+                            foreign_address: null
+                          applicant_code: '023445556'
+                          approved_by: null
+                          approved_date: null
+                          cert_id: null
+                          close_date: null
+                          company_name_en: SDFSDFSDF
+                          company_name_kh: សដថដថ
+                          company_single_id: ''
+                          company_type_code: INCORP
+                          contact:
+                            mobile_phone: +855 98 765 444
+                            email: test@gmail.com
+                            website: sdfsdf
+                            social_media: sdfsdfsdf
+                          createdAt: '2022-06-28T02:07:37.768Z'
+                          department: null
+                          director: 62d6911f3d4174498ab3742e
+                          documents:
+                            - _id: 62d6881c3d417453eeb36c2e
+                              key: condemnation_doc
+                              type: license
+                              original_name: company_legal_doc.pdf
+                          employees:
+                            - 62d6911f3d41743817b37434
+                          expiry_date: null
+                          firstSubmittedAt: null
+                          individuals:
+                            - 62d6911f3d41742f35b37436
+                          is_accept_info: true
+                          is_active: true
+                          is_branch: false
+                          is_moc_data: false
+                          is_out_of_punishment: true
+                          is_re_registration: false
+                          is_valid_info: true
+                          legal_entities: []
+                          license_types:
+                            - license_type:
+                                _id: 60711460e0a80301a89cb39b
+                                description: នីតិវិធីស្នើសុំអាជ្ញាបណ្ណប្រកបអាជីវកម្មបញ្ចាំ
+                                name_en: Pawn Shop
+                                name_kh: អាជីវកម្មបញ្ចាំ
+                                createdAt: '2021-04-10T02:58:40.261Z'
+                                updatedAt: '2021-04-10T02:58:40.261Z'
+                                __v: 0
+                              capital_investment: 1200000000
+                          'no': null
+                          parent: 628deb9460d5fb87a8e16518
+                          registration_id: '2202040'
+                          stage: SUBMIT_VERIFY
+                          start_date: null
+                          status: DRAFT
+                          submittedAt: null
+                          suspend_date: null
+                          updatedAt: '2022-07-19T11:10:23.831Z'
+                          user: null
+                          version: 1
+                          company_type:
+                            _id: 606d6071abbd3701b4be0c3e
+                            code: INCORP
+                            desc_kh: ក្រុមហ៊ុនមូលធន
+                            desc_en: Limited Company
+                            createdAt: '2021-04-07T07:34:09.727Z'
+                            updatedAt: '2021-04-07T07:34:09.727Z'
+                            __v: 0
+                      pagination:
+                        page: 1
+                        limit: 10
+                        total: 293
+                properties:
+                  status:
+                    type: integer
+                    description: 'Response code: 1: Successfully, 0: Not found, -1: Internal Server Error'
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      single_id:
+                        type: string
+                        description: Single ID
+                      company_name_en:
+                        type: string
+                        description: Company‘s name in English
+                      company_name_kh:
+                        type: string
+                        description: Company’s name in Khmer
+                      license_type:
+                        type: object
+                        properties:
+                          code:
+                            type: string
+                          name_en:
+                            type: string
+                          name_kh:
+                            type: string
+                      license_status:
+                        type: string
+                        description: Check table status Mapping
+                      registration_id:
+                        type: string
+                        description: Register Number
+                      submitted_date:
+                        type: string
+                        description: Submitted Date
+                      decision_date:
+                        type: string
+                        description: Decision Date
+                      expired_date:
+                        type: string
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                        description: Current page
+                      size:
+                        type: integer
+                        description: Number of records
+                      total_counts:
+                        type: integer
+                        description: Total number of records
+                      total_page:
+                        type: integer
+                        description: Total number of pages
+              examples:
+                example-1:
+                  value:
+                    status: 0
+                    message: string
+                    data:
+                      single_id: string
+                      company_name_en: string
+                      company_name_kh: string
+                      license_type:
+                        code: string
+                        name_en: string
+                        name_kh: string
+                      license_status: string
+                      request_no: string
+                      submitted_date: string
+                      decision_date: string
+                      expired_date: string
+                    pagination:
+                      page: 0
+                      size: 0
+                      total_counts: 0
+                      total_page: 0
+      security:
+        - CamDigiKey-JWT: []
+      description: Get all applications
+    parameters: []
+  '/r1/CAMBODIA/GOV/CAMDX-000019/MISTI_REG_SYSTEM/getApplication/{single-id}':
+    get:
+      tags:
+        - applications
+      summary: Get all applications
+      operationId: getApplicationBySingleIdOrMOCRegistrationNumber
+      requestBody:
+        content: {}
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-000002/OBR
+          in: header
+          name: X-Road-Client
+          description: X-Road Client Header
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    status: 1
+                    message: Success
+                    data:
+                      applications:
+                        - _id: 62ba6269c645a5316b6d8689
+                          __v: 0
+                          address:
+                            country_code: KH
+                            province_code: '03'
+                            district_code: '0303'
+                            commune_code: '030304'
+                            village_code: '03030402'
+                            house_number: '44'
+                            street_number: '34'
+                            postcode: null
+                            foreign_address: null
+                          applicant_code: '023445556'
+                          approved_by: null
+                          approved_date: null
+                          cert_id: null
+                          close_date: null
+                          company_name_en: SDFSDFSDF
+                          company_name_kh: សដថដថ
+                          company_single_id: ''
+                          company_type_code: INCORP
+                          contact:
+                            mobile_phone: +855 98 765 444
+                            email: test@gmail.com
+                            website: sdfsdf
+                            social_media: sdfsdfsdf
+                          createdAt: '2022-06-28T02:07:37.768Z'
+                          department: null
+                          director: 62d6911f3d4174498ab3742e
+                          documents:
+                            - _id: 62d6881c3d417453eeb36c2e
+                              key: condemnation_doc
+                              type: license
+                              original_name: company_legal_doc.pdf
+                          employees:
+                            - 62d6911f3d41743817b37434
+                          expiry_date: null
+                          firstSubmittedAt: null
+                          individuals:
+                            - 62d6911f3d41742f35b37436
+                          is_accept_info: true
+                          is_active: true
+                          is_branch: false
+                          is_moc_data: false
+                          is_out_of_punishment: true
+                          is_re_registration: false
+                          is_valid_info: true
+                          legal_entities: []
+                          license_types:
+                            - license_type:
+                                _id: 60711460e0a80301a89cb39b
+                                description: នីតិវិធីស្នើសុំអាជ្ញាបណ្ណប្រកបអាជីវកម្មបញ្ចាំ
+                                name_en: Pawn Shop
+                                name_kh: អាជីវកម្មបញ្ចាំ
+                                createdAt: '2021-04-10T02:58:40.261Z'
+                                updatedAt: '2021-04-10T02:58:40.261Z'
+                                __v: 0
+                              capital_investment: 1200000000
+                          'no': null
+                          parent: 628deb9460d5fb87a8e16518
+                          registration_id: '2202040'
+                          stage: SUBMIT_VERIFY
+                          start_date: null
+                          status: DRAFT
+                          submittedAt: null
+                          suspend_date: null
+                          updatedAt: '2022-07-19T11:10:23.831Z'
+                          user: null
+                          version: 1
+                          company_type:
+                            _id: 606d6071abbd3701b4be0c3e
+                            code: INCORP
+                            desc_kh: ក្រុមហ៊ុនមូលធន
+                            desc_en: Limited Company
+                            createdAt: '2021-04-07T07:34:09.727Z'
+                            updatedAt: '2021-04-07T07:34:09.727Z'
+                            __v: 0
+                      pagination:
+                        page: 1
+                        limit: 10
+                        total: 293
+                properties:
+                  code:
+                    type: integer
+                    description: |-
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      single_id:
+                        type: string
+                        description: Single ID
+                      company_name_en:
+                        type: string
+                        description: Company‘s name in English
+                      company_name_kh:
+                        type: string
+                        description: Company’s name in Khmer
+                      licenses:
+                        type: array
+                        description: Company’s name in Khmer
+                        items:
+                          type: object
+                          properties:
+                            license_type:
+                              type: object
+                              properties:
+                                code:
+                                  type: string
+                                  description: |-
+                                    License code
+                                    See Code Mapping table  for more details
+                            request_no:
+                              type: string
+                              description: Request Number
+                            services:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                    description: |-
+                                      Service Code
+                                      See Code Mapping table  for more details
+                            status:
+                              type: string
+                              description: |-
+                                Application status
+                                See Code Mapping table  for more details
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      single_id: string
+                      company_name_en: string
+                      company_name_kh: string
+                      licenses:
+                        - license_type:
+                            code: string
+                          request_no: string
+                          services:
+                            - code: string
+                          status: string
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      security:
+        - CamDigiKey-JWT: []
+      description: Get application by SingleId/MOC Registration Number
+    parameters:
+      - schema:
+          type: string
+          default: '011155333'
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+  '/r1/CAMBODIA/GOV/CAMDX-000019/MISTI_REG_SYSTEM/getApplicationDetail/{registration_id}/info':
+    get:
+      tags:
+        - applications
+      summary: Get application detail
+      operationId: getApplicationDetail
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-000002/OBR
+          in: header
+          name: X-Road-Client
+          description: X-Road Client Header
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      company_data:
+                        single_id: string
+                        company_name_en: string
+                        company_name_kh: string
+                        land_size: 0
+                        current_address:
+                          province:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          district:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          commune:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          village:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          house_number: string
+                          street_number: string
+                          group_name: string
+                        products:
+                          - product_name: string
+                        is_register_via_obr: true
+                        use_obr_business_address: true
+                      biz_owner_data:
+                        first_name_en: string
+                        first_name_kh: string
+                        last_name_en: string
+                        last_name_kh: string
+                        gender: string
+                        phone_number: string
+                        email: string
+                        career: string
+                        skill: string
+                        total_employees: 0
+                        total_female_employees: 0
+                      supporting_docs:
+                        - code: string
+                          file_name: string
+                      license_data:
+                        decision_date: string
+                        expired_date: string
+                        license_properties: {}
+                        license_status: string
+                        license_type: string
+                        payment_status: string
+                        request_no: string
+                        service_type: string
+                        submitted_date: string
+                      register_by:
+                        first_name_en: string
+                        first_name_kh: string
+                        last_name_en: string
+                        last_name_kh: string
+                        phone: string
+                        email: string
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: |
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      company_data:
+                        type: object
+                        properties:
+                          single_id:
+                            type: string
+                            description: Single ID
+                          company_name_en:
+                            type: string
+                            description: Company‘s name in English
+                          company_name_kh:
+                            type: string
+                            description: 'Company’s name in Khmer '
+                          land_size:
+                            description: Company’s land size
+                            type: number
+                          current_address:
+                            type: object
+                            description: Company’s address
+                            properties:
+                              province:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                    description: Province’s code
+                                  name_en:
+                                    type: string
+                                    description: Province’s name in English
+                                  name_kh:
+                                    type: string
+                                    description: Province’s name in Khmer
+                              district:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                    description: District’s code
+                                  name_en:
+                                    type: string
+                                    description: District’s name in English
+                                  name_kh:
+                                    type: string
+                                    description: District’s name in Khmer
+                              commune:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                    description: Commune’s code
+                                  name_en:
+                                    type: string
+                                    description: Commune’s name in English
+                                  name_kh:
+                                    type: string
+                                    description: Commune’s name in Khmer
+                              village:
+                                type: object
+                                properties:
+                                  code:
+                                    type: string
+                                    description: Village’s code
+                                  name_en:
+                                    type: string
+                                    description: Village’s name in English
+                                  name_kh:
+                                    type: string
+                                    description: Village’s name in Khmer
+                              house_number:
+                                type: string
+                                description: House number
+                              street_number:
+                                type: string
+                                description: Street number
+                              group_name:
+                                type: string
+                                description: Group name
+                          products:
+                            type: array
+                            description: Is this business register via OBR?
+                            items:
+                              type: object
+                              properties:
+                                product_name:
+                                  type: string
+                                  description: Product’s name
+                          is_register_via_obr:
+                            type: boolean
+                            description: Is this business register via OBR?
+                          use_obr_business_address:
+                            type: boolean
+                            description: Is this business use same address from OBR?
+                      biz_owner_data:
+                        type: object
+                        properties:
+                          first_name_en:
+                            type: string
+                            description: Business owner’s first name in English
+                          first_name_kh:
+                            type: string
+                            description: Business owner’s first name in Khmer
+                          last_name_en:
+                            type: string
+                            description: Business owner’s last name in English
+                          last_name_kh:
+                            type: string
+                            description: Business owner’s last name in Khmer
+                          gender:
+                            type: string
+                            description: 'Gender: FEMALE┃MALE'
+                          phone_number:
+                            type: string
+                            description: Business owner’s phone number
+                          email:
+                            type: string
+                            description: Business owner’s email
+                          career:
+                            type: string
+                            description: Business owner’s career
+                          skill:
+                            type: string
+                            description: Business owner’s skill
+                          total_employees:
+                            description: Total number of employees
+                            type: integer
+                          total_female_employees:
+                            type: integer
+                            description: Total number of female employees
+                      supporting_docs:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            code:
+                              type: string
+                              description: Document code
+                            file_name:
+                              type: string
+                              description: Document file name
+                      license_data:
+                        type: object
+                        properties:
+                          decision_date:
+                            type: string
+                            description: Decision date
+                          expired_date:
+                            type: string
+                            description: Expired date
+                          license_properties:
+                            description: Expired date
+                            type: object
+                          license_status:
+                            type: string
+                            description: |-
+                              Application status
+                              See Code Mapping table  for more details
+                          license_type:
+                            type: string
+                            description: |-
+                              License type
+                              See Code Mapping table  for more details
+                          payment_status:
+                            type: string
+                            description: |-
+                              Payment Status 
+                              See Code Mapping table  for more details
+                          request_no:
+                            type: string
+                            description: Request number of license
+                          service_type:
+                            type: string
+                            description: Service type of license
+                          submitted_date:
+                            type: string
+                            description: Submiited date
+                      register_by:
+                        type: object
+                        properties:
+                          first_name_en:
+                            type: string
+                            description: Registrant’s first name in English
+                          first_name_kh:
+                            type: string
+                            description: Registrant’s first name in Khmer
+                          last_name_en:
+                            type: string
+                            description: Registrant’s last name in English
+                          last_name_kh:
+                            type: string
+                            description: Registrant’s last name in Khmer
+                          phone:
+                            type: string
+                            description: Registrant’s phone number
+                          email:
+                            type: string
+                            description: Registrant’s email
+      description: Get application detail
+    parameters:
+      - schema:
+          type: string
+          default: '00051039'
+        name: registration_id
+        in: path
+        required: true
+        description: Register number
+  '/r1/CAMBODIA/GOV/CAMDX-000019/MISTI_REG_SYSTEM/getApplicationTimeline/{single-id}/timeline/{requestNo}':
+    get:
+      tags:
+        - applications
+      summary: Get applications timeline (histories)
+      operationId: getApplicationsTimeline
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-000002/OBR
+          in: header
+          name: X-Road-Client
+          description: X-Road Client Header
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      single_id: string
+                      company_name_en: string
+                      company_name_kh: string
+                      licenses:
+                        - license_type:
+                            code: string
+                          request_no: string
+                          services:
+                            - code: string
+                          status: string
+                properties:
+                  code:
+                    type: integer
+                    description: |-
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      single_id:
+                        type: string
+                        description: Single ID
+                      company_name_en:
+                        type: string
+                        description: Company‘s name in English
+                      company_name_kh:
+                        type: string
+                        description: Company’s name in Khmer
+                      request_no:
+                        type: string
+                        description: Request Number
+                      timelines:
+                        description: Request Number
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            title_en:
+                              type: string
+                              description: Title in English
+                            title_kh:
+                              type: string
+                              description: Title in Khmer
+                            description_en:
+                              type: string
+                              description: Description in English
+                            description_kh:
+                              type: string
+                              description: Description in Khmer
+                            event_date_time:
+                              type: string
+                              description: Date and time when event happened
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      single_id: string
+                      company_name_en: string
+                      company_name_kh: string
+                      request_no: string
+                      timelines:
+                        - title_en: string
+                          title_kh: string
+                          description_en: string
+                          description_kh: string
+                          event_date_time: string
+      description: Get applications timeline (histories)
+      security:
+        - CamDigiKey-JWT: []
+    parameters:
+      - schema:
+          type: string
+          default: '1000025156'
+        name: single-id
+        in: path
+        description: Single ID
+        required: true
+      - schema:
+          type: string
+          default: '1'
+        name: requestNo
+        in: path
+        description: Application request number
+        required: true

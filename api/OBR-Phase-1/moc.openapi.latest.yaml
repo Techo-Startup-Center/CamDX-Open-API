@@ -1,0 +1,1590 @@
+openapi: 3.1.0
+info:
+  title: MoC
+  version: 1.0.0
+  description: "## \U0001F4AB Overview\n\nIn OBR 2nd phase, Ministry of Commerce(MoC)'s data has become one of the primary data for business registration in other ministry portals. To make form fill more user friendly and avoid any typo mistake and improve correctness of the company, director, and shareholder information. User can use their CamDigiKey access token to retrieve his/her company information from MOC system via MOC Open API. \n\n## ⚙️ Scope\n\nBasically, the MOC Open API divides in to two scopes for accessing the data:\n1. User Level: For user, use CamDigiKey user level’s token to retrieve the information for filling the form in the portal\n    * Search his/her approved companies\n    * Get basic company information\n    * Get company director details\n    * Get company shareholder details\n    * Get documents of the company\n2. Organization Level: For officers, use CamDigiKey organization level’s token to retrieve the information for the verification process.\n    * Get basic company information\n    * Get documents of the company\n    * Get company director details\n    * Get company shareholder details\n\n### \U0001F9F0 Authentication\nFor security reason, authentication mechanism is significant while exchange data via web service between Consumer’s system and MoC's system. Comsumer’s system must attach **CamDigiKey User/Organization Access Token** in the HTTP request header during request to Consumer’s endpoint.\n\n### \U0001F9F0 Code Mapping\n\n<table>\n <tbody><tr>\n  <td>Code Type</td>\n  <td>Code</td>\n  <td>Khmer Definition</td>\n  <td>English Definition</td>\n  <td>Remarks</td>\n </tr>\n <tr>\n  <td rowspan=\"7\">Company Types</td>\n  <td>PRIVATE_LIMITED_COMPANY</td>\n  <td><span style=\"mso-bidi-language:KHM\" lang=\"KHM\">ក្រុមហ៊ុនឯកជនទទួលខុសត្រូវមានកម្រិត</span></td>\n  <td>Private Limited Company</td>\n  <td></td>\n </tr>\n <tr>\n  <td>PUBLIC_LIMITED_COMPANY</td>\n  <td><span style=\"mso-bidi-language:KHM\" lang=\"KHM\">ក្រុមហ៊ុនមហាជនទទួលខុសត្រូវមានកម្រិត</span></td>\n  <td>Public Limited Company</td>\n  <td></td>\n </tr>\n <tr>\n  <td>REGISTER_BRANCH_OFFICE_OF_FOREIGN_COMPANY</td>\n  <td><span style=\"mso-bidi-language:KHM\">ចុះបញ្ជីជាសាខាក្រុមហ៊ុននៃក្រុមហ៊ុនបរទេស</span></td>\n  <td>Register Branch Office of Foreign Company</td>\n  <td></td>\n </tr>\n <tr>\n  <td>REGISTER_COMMERCIAL_REPRESENTATIVE_OFFICE</td>\n  <td><span style=\"mso-bidi-language:KHM\" lang=\"KHM\">ចុះបញ្ជីជាការិយាល័យតំណាង</span></td>\n  <td>Register Commercial Representative Office</td>\n  <td></td>\n </tr>\n <tr>\n  <td>SOLE_PROPRIETORSHIP</td>\n  <td><span style=\"mso-bidi-language:KHM\" lang=\"KHM\">សហគ្រាសឯកបុគ្គល</span></td>\n  <td>Sole Proprietorship</td>\n  <td></td>\n </tr>\n <tr>\n  <td>GENERAL_PARTNERSHIP</td>\n  <td><span style=\"mso-bidi-language:KHM\" lang=\"KHM\">ក្រុមហ៊ុនសហកម្មសិទ្ធិទូទៅ</span></td>\n  <td>General Partnership</td>\n  <td></td>\n </tr>\n <tr>\n  <td>LIMITED_PARTNERSHIP</td>\n  <td><span style=\"mso-bidi-language:KHM\" lang=\"KHM\">ក្រុមហ៊ុនសហកម្មសិទ្ធិមានកម្រិត</span></td>\n  <td>Limited Partnership</td>\n  <td></td>\n </tr>\n <tr>\n  <td rowspan=\"4\">Document Types</td>\n  <td>AOA</td>\n  <td><span style=\"mso-bidi-language:KHM\" lang=\"KHM\">លក្ខន្តិកៈក្រុមហ៊ុន</span></td>\n  <td>Company memorandum</td>\n  <td></td>\n </tr>\n <tr>\n  <td>CC</td>\n  <td><span style=\"mso-bidi-language:KHM\" lang=\"KHM\">វិញ្ញាបនប័ត្របញ្ជាក់ការចុះបញ្ជីពាណិជ្ជកម្មនៅក្រសួងពាណិជ្ជកម្ម</span></td>\n  <td>Company certificate</td>\n  <td></td>\n </tr>\n <tr>\n  <td>ECEN</td>\n  <td><span style=\"mso-bidi-language:KHM\">ព័ត៌មានបន្ថែមរបស់ក្រុមហ៊ុនជាភាសាអង់គ្លេស</span></td>\n  <td>Extract of Company Information in English Version</td>\n  <td></td>\n </tr>\n <tr>\n  <td>ECKH</td>\n  <td><span style=\"mso-bidi-language:KHM\">ព័ត៌មានបន្ថែមរបស់ក្រុមហ៊ុនជាភាសាខ្មែ</span></td>\n  <td>Extract of Company Information in Khmer Version</td>\n  <td></td>\n </tr>\n</tbody></table>"
+  contact:
+    name: CamDX Team
+    email: camdx@mef.gov.kh
+    url: 'https://www.camdx.gov.kh'
+  license:
+    name: MIT
+    url: 'https://spdx.org/licenses/MIT'
+  termsOfService: 'https://www.camdx.gov.kh/#contact'
+  summary: Ministry Of Commerce's Open API
+servers:
+  - url: 'https://catalog-dev.camdx.gov.kh'
+    description: Development
+  - url: 'https://ss.camdx.gov.kh'
+    description: Production
+components:
+  securitySchemes:
+    CamDigiKey-JWT:
+      type: http
+      scheme: bearer
+      description: Organization level’s token which generate from CamDigiKey.
+tags:
+  - name: applications
+  - name: organization
+  - name: statistics
+  - name: user
+paths:
+  /r1/CAMBODIA/GOV/CAMDX-20201222/MOC/open-api/v1/companies:
+    post:
+      summary: User - Approved Companies By User
+      operationId: getApprovedCompaniesByUser
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      companies:
+                        - single_id: string
+                          company_name_en: string
+                          company_name_kh: string
+                      pagination:
+                        total_pages: 0
+                        total_counts: 0
+                        page: 0
+                        size: 0
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    status: 1
+                    message: Success
+                    data:
+                      - _id:
+                          _id: 62708acf89648886fecb40c5
+                          country_code: KH
+                          nationality_kh: ខ្មែរ
+                          nationality_en: Cambodian
+                          gdt_id: 30
+                          name_en: Cambodia
+                          name_kh: កម្ពុជា
+                          createdAt: '2022-05-03T01:52:15.219Z'
+                          updatedAt: '2022-05-03T01:52:15.219Z'
+                          __v: 0
+                        total: 110
+                        total_male: 69
+                        total_female: 41
+                properties:
+                  code:
+                    type: integer
+                    description: |
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: 'Response message  '
+                  data:
+                    type: object
+                    description: Return list of company statistic
+                    properties:
+                      companies:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            single_id:
+                              type: string
+                              description: Single ID
+                            company_name_en:
+                              type: string
+                              description: Company‘s name in English
+                            company_name_kh:
+                              type: string
+                              description: Company’s name in Khmer
+                      pagination:
+                        type: object
+                        properties:
+                          total_pages:
+                            type: integer
+                            description: Total number of pages
+                          total_counts:
+                            type: number
+                            description: Total number of records
+                          page:
+                            type: number
+                            description: Current page number
+                          size:
+                            type: number
+                            description: Number of records per page
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        single_id:
+                          type: string
+                        company_name_kh:
+                          type: string
+                        company_name_en:
+                          type: string
+                  pagination:
+                    type: object
+                    properties:
+                      page:
+                        type: integer
+                      size:
+                        type: integer
+                      total_pages:
+                        type: integer
+                      total_counts:
+                        type: integer
+                x-examples:
+                  example-1:
+                    code: '0'
+                    message: Success
+                    data:
+                      - single_id: '5010015103'
+                        company_name_kh: ចាក ចិត្ត
+                        company_name_en: CHAK CHET
+                    pagination:
+                      page: 0
+                      size: 15
+                      total_pages: 1
+                      total_counts: 1
+              examples:
+                example-1:
+                  value:
+                    code: string
+                    message: string
+                    data:
+                      - single_id: string
+                        company_name_kh: string
+                        company_name_en: string
+                    pagination:
+                      page: 0
+                      size: 0
+                      total_pages: 0
+                      total_counts: 0
+      description: Get approved companies by user
+      security:
+        - CamDigiKey-JWT: []
+      x-internal: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  type: integer
+                size:
+                  type: integer
+              x-examples:
+                example-1:
+                  page: 1
+                  size: 20
+            examples:
+              example-1:
+                value:
+                  page: 1
+                  size: 20
+          application/xml:
+            schema:
+              type: object
+              properties: {}
+        description: ''
+      tags:
+        - user
+    parameters: []
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MOC/open-api/v1/companies/{single-id}':
+    get:
+      summary: User - Company Information
+      operationId: getCompanyInformation
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      companies:
+                        - single_id: string
+                          company_name_en: string
+                          company_name_kh: string
+                      pagination:
+                        total_pages: 0
+                        total_counts: 0
+                        page: 0
+                        size: 0
+                properties:
+                  code:
+                    type: integer
+                    description: |-
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      company_name_en:
+                        type: string
+                        description: Company‘s name in English
+                      company_name_kh:
+                        type: string
+                        description: Company’s name in Khmer
+                      company_address:
+                        type: object
+                        description: Company’s address
+                        properties:
+                          province:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                                description: Province’s code
+                              name_en:
+                                type: string
+                                description: Province’s name in English
+                              name_kh:
+                                type: string
+                                description: Province’s name in Khmer
+                          district:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                                description: District’s code
+                              name_en:
+                                type: string
+                                description: District’s name in English
+                              name_kh:
+                                type: string
+                                description: District’s name in Khmer
+                          commune:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                                description: Commune’s code
+                              name_en:
+                                type: string
+                                description: Commune’s name in English
+                              name_kh:
+                                type: string
+                                description: Commune’s name in Khmer
+                          village:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                                description: Village’s code
+                              name_en:
+                                type: string
+                                description: Village’s name in English
+                              name_kh:
+                                type: string
+                                description: Village’s name in Khmer
+                          house:
+                            type: string
+                            description: House number
+                          street:
+                            type: string
+                            description: Street number
+                      company_registration_number:
+                        type: string
+                        description: Company’s registration number
+                      company_registration_date:
+                        type: string
+                        description: Company’s registration date (“yyyy-MM-dd”)
+                      company_telephone_number:
+                        type: string
+                        description: Company’s phone number
+                      company_email:
+                        type: string
+                        description: Company’s email
+                      company_type:
+                        type: string
+                        description: |-
+                          Company types. 
+                          See Code Mapping table on 1 for more details
+                      business_objectives:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            code:
+                              type: string
+                              description: Business’s objective code
+                            description_en:
+                              type: string
+                              description: Business’s description in English
+                            description_kh:
+                              type: string
+                              description: Business’s description in Khmer
+                            main_business_activity:
+                              type: object
+                              properties:
+                                code:
+                                  type: string
+                                  description: Main business’s objective code
+                                description_en:
+                                  type: string
+                                  description: Main business’s description in English
+                                description_kh:
+                                  type: string
+                                  description: Main business’s description in Khmer
+                      parent_company:
+                        type: object
+                        description: Parent company’s details
+                        properties:
+                          parent_company_name:
+                            type: string
+                            description: Parent company’s name
+                          parent_company_registration_number:
+                            type: string
+                            description: Parent company’s registration number
+                          parent_company_register_date:
+                            type: string
+                            description: Parent company’s register date
+                          parent_company_register_country_code:
+                            type: string
+                            description: Parent company’s register country code
+                          parent_company_register_country_name_kh:
+                            type: string
+                            description: Parent company’s register country name in Khmer
+                          parent_company_register_country_name_en:
+                            type: string
+                            description: Parent company’s register country name in English
+                          parent_company_country_address:
+                            type: string
+                            description: Parent company’s country address
+                          parent_company_full_address:
+                            type: object
+                            description: Parent company’s full address
+                          parent_company_email:
+                            type: string
+                            description: Parent company’s email
+                          parent_company_phone:
+                            type: string
+                            description: Parent company’s phone
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      company_name_en: string
+                      company_name_kh: string
+                      company_address:
+                        province:
+                          code: string
+                          name_en: string
+                          name_kh: string
+                        district:
+                          code: string
+                          name_en: string
+                          name_kh: string
+                        commune:
+                          code: string
+                          name_en: string
+                          name_kh: string
+                        village:
+                          code: string
+                          name_en: string
+                          name_kh: string
+                        house: string
+                        street: string
+                      company_registration_number: string
+                      company_registration_date: string
+                      company_telephone_number: string
+                      company_email: string
+                      company_type: string
+                      business_objectives:
+                        - code: string
+                          description_en: string
+                          description_kh: string
+                          main_business_activity:
+                            code: string
+                            description_en: string
+                            description_kh: string
+                      parent_company:
+                        parent_company_name: string
+                        parent_company_registration_number: string
+                        parent_company_register_date: string
+                        parent_company_register_country_code: string
+                        parent_company_register_country_name_kh: string
+                        parent_company_register_country_name_en: string
+                        parent_company_country_address: string
+                        parent_company_full_address: {}
+                        parent_company_email: string
+                        parent_company_phone: string
+      security:
+        - CamDigiKey-JWT: []
+      description: Get company information
+      tags:
+        - user
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MOC/open-api/v1/companies/{single-id}/documents':
+    post:
+      summary: User - Company Documents
+      operationId: getCompanyDocuments
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      companies:
+                        - single_id: string
+                          company_name_en: string
+                          company_name_kh: string
+                      pagination:
+                        total_pages: 0
+                        total_counts: 0
+                        page: 0
+                        size: 0
+                properties:
+                  header status:
+                    description: |-
+                      http body: byte stream
+
+                      200: OK 
+                      404: File not found
+                      400: Bad request
+                    type: string
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      - last_name: string
+                        first_name: string
+                        last_name_en: string
+                        first_name_en: string
+                        gender: string
+                        date_of_birth: string
+                        identification_number: string
+                        expired_date: string
+                        issue_date: string
+                        mobile_phone_number: string
+                        telephone_number: string
+                        email_address: string
+                        nationality:
+                          code: string
+                          name_en: string
+                          name_kh: string
+                        photo_doc: string
+                        id_doc: string
+                        current_address:
+                          country:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          foreign_address: string
+                          local_address:
+                            province:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            district:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            commune:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            village:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            house: string
+                            street: string
+                        board_director: true
+      security:
+        - CamDigiKey-JWT: []
+      description: Get company documents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                document_type:
+                  type: string
+              x-examples:
+                example-1:
+                  document_type: CC
+            examples:
+              example-1:
+                value:
+                  document_type: CC
+      tags:
+        - user
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MOC/open-api/v1/officer-check/companies/{single-id}':
+    get:
+      summary: Organization - Company Information
+      operationId: getCompanyInformation_Org
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      companies:
+                        - single_id: string
+                          company_name_en: string
+                          company_name_kh: string
+                      pagination:
+                        total_pages: 0
+                        total_counts: 0
+                        page: 0
+                        size: 0
+                properties:
+                  code:
+                    type: integer
+                    description: |-
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: object
+                    properties:
+                      company_name_en:
+                        type: string
+                        description: Company‘s name in English
+                      company_name_kh:
+                        type: string
+                        description: Company’s name in Khmer
+                      company_address:
+                        type: object
+                        description: Company’s address
+                        properties:
+                          province:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                                description: Province’s code
+                              name_en:
+                                type: string
+                                description: Province’s name in English
+                              name_kh:
+                                type: string
+                                description: Province’s name in Khmer
+                          district:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                                description: District’s code
+                              name_en:
+                                type: string
+                                description: District’s name in English
+                              name_kh:
+                                type: string
+                                description: District’s name in Khmer
+                          commune:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                                description: Commune’s code
+                              name_en:
+                                type: string
+                                description: Commune’s name in English
+                              name_kh:
+                                type: string
+                                description: Commune’s name in Khmer
+                          village:
+                            type: object
+                            properties:
+                              code:
+                                type: string
+                                description: Village’s code
+                              name_en:
+                                type: string
+                                description: Village’s name in English
+                              name_kh:
+                                type: string
+                                description: Village’s name in Khmer
+                          house:
+                            type: string
+                            description: House number
+                          street:
+                            type: string
+                            description: Street number
+                      company_registration_number:
+                        type: string
+                        description: Company’s registration number
+                      company_registration_date:
+                        type: string
+                        description: Company’s registration date (“yyyy-MM-dd”)
+                      company_telephone_number:
+                        type: string
+                        description: Company’s phone number
+                      company_email:
+                        type: string
+                        description: Company’s email
+                      company_type:
+                        type: string
+                        description: |-
+                          Company types. 
+                          See Code Mapping table on 1 for more details
+                      business_objectives:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            code:
+                              type: string
+                              description: Business’s objective code
+                            description_en:
+                              type: string
+                              description: Business’s description in English
+                            description_kh:
+                              type: string
+                              description: Business’s description in Khmer
+                            main_business_activity:
+                              type: object
+                              properties:
+                                code:
+                                  type: string
+                                  description: Main business’s objective code
+                                description_en:
+                                  type: string
+                                  description: Main business’s description in English
+                                description_kh:
+                                  type: string
+                                  description: Main business’s description in Khmer
+                      parent_company:
+                        type: object
+                        description: Parent company’s details
+                        properties:
+                          parent_company_name:
+                            type: string
+                            description: Parent company’s name
+                          parent_company_registration_number:
+                            type: string
+                            description: Parent company’s registration number
+                          parent_company_register_date:
+                            type: string
+                            description: Parent company’s register date
+                          parent_company_register_country_code:
+                            type: string
+                            description: Parent company’s register country code
+                          parent_company_register_country_name_kh:
+                            type: string
+                            description: Parent company’s register country name in Khmer
+                          parent_company_register_country_name_en:
+                            type: string
+                            description: Parent company’s register country name in English
+                          parent_company_country_address:
+                            type: string
+                            description: Parent company’s country address
+                          parent_company_full_address:
+                            type: object
+                            description: Parent company’s full address
+                          parent_company_email:
+                            type: string
+                            description: Parent company’s email
+                          parent_company_phone:
+                            type: string
+                            description: Parent company’s phone
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      company_name_en: string
+                      company_name_kh: string
+                      company_address:
+                        province:
+                          code: string
+                          name_en: string
+                          name_kh: string
+                        district:
+                          code: string
+                          name_en: string
+                          name_kh: string
+                        commune:
+                          code: string
+                          name_en: string
+                          name_kh: string
+                        village:
+                          code: string
+                          name_en: string
+                          name_kh: string
+                        house: string
+                        street: string
+                      company_registration_number: string
+                      company_registration_date: string
+                      company_telephone_number: string
+                      company_email: string
+                      company_type: string
+                      business_objectives:
+                        - code: string
+                          description_en: string
+                          description_kh: string
+                          main_business_activity:
+                            code: string
+                            description_en: string
+                            description_kh: string
+                      parent_company:
+                        parent_company_name: string
+                        parent_company_registration_number: string
+                        parent_company_register_date: string
+                        parent_company_register_country_code: string
+                        parent_company_register_country_name_kh: string
+                        parent_company_register_country_name_en: string
+                        parent_company_country_address: string
+                        parent_company_full_address: {}
+                        parent_company_email: string
+                        parent_company_phone: string
+      security:
+        - CamDigiKey-JWT: []
+      description: Get company information
+      tags:
+        - organization
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MOC/open-api/v1/officer-check/companies/{single-id}/documents':
+    post:
+      summary: Organization - Company Documents
+      operationId: getCompanyDocuments_Org
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      companies:
+                        - single_id: string
+                          company_name_en: string
+                          company_name_kh: string
+                      pagination:
+                        total_pages: 0
+                        total_counts: 0
+                        page: 0
+                        size: 0
+                properties:
+                  header status:
+                    description: |-
+                      http body: byte stream
+
+                      200: OK 
+                      404: File not found
+                      400: Bad request
+                    type: string
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      - last_name: string
+                        first_name: string
+                        last_name_en: string
+                        first_name_en: string
+                        gender: string
+                        date_of_birth: string
+                        identification_number: string
+                        expired_date: string
+                        issue_date: string
+                        mobile_phone_number: string
+                        telephone_number: string
+                        email_address: string
+                        nationality:
+                          code: string
+                          name_en: string
+                          name_kh: string
+                        photo_doc: string
+                        id_doc: string
+                        current_address:
+                          country:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          foreign_address: string
+                          local_address:
+                            province:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            district:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            commune:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            village:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            house: string
+                            street: string
+                        board_director: true
+      security:
+        - CamDigiKey-JWT: []
+      description: Get company documents
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                document_type:
+                  type: string
+              x-examples:
+                example-1:
+                  document_type: CC
+            examples:
+              example-1:
+                value:
+                  document_type: CC
+      tags:
+        - organization
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MOC/open-api/v1/companies/{single-id}/directors':
+    get:
+      summary: User - Company Director Information
+      operationId: getCompanyDirectorInformation
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      companies:
+                        - single_id: string
+                          company_name_en: string
+                          company_name_kh: string
+                      pagination:
+                        total_pages: 0
+                        total_counts: 0
+                        page: 0
+                        size: 0
+                properties:
+                  code:
+                    type: integer
+                    description: |-
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        last_name:
+                          type: string
+                          description: Director’s last name in Khmer
+                        first_name:
+                          type: string
+                          description: Director’s first name in Khmer
+                        last_name_en:
+                          type: string
+                          description: Director’s last name in English
+                        first_name_en:
+                          type: string
+                          description: Director’s first name in English
+                        gender:
+                          type: string
+                          description: Director’s gender
+                        date_of_birth:
+                          type: string
+                          description: Director’s birthday
+                        identification_number:
+                          type: string
+                          description: Director’s identification number
+                        expired_date:
+                          type: string
+                          description: Director’s identification expire date
+                        issue_date:
+                          type: string
+                          description: Director’s identification issue date
+                        mobile_phone_number:
+                          type: string
+                          description: Director’s mobile phone number
+                        telephone_number:
+                          type: string
+                          description: Director’s telephone number
+                        email_address:
+                          type: string
+                          description: Director’s email
+                        nationality:
+                          type: object
+                          properties:
+                            code:
+                              type: string
+                            name_en:
+                              type: string
+                            name_kh:
+                              type: string
+                        photo_doc:
+                          type: string
+                          description: Director’s photo url
+                        id_doc:
+                          type: string
+                          description: Director’s id card doc url
+                        current_address:
+                          type: object
+                          description: Director’s current address
+                          properties:
+                            country:
+                              type: object
+                              description: Director’s country
+                              properties:
+                                code:
+                                  type: string
+                                  description: 'Country’s code. 2 characters standard like: KH, EN'
+                                name_en:
+                                  type: string
+                                  description: Country’s name in English
+                                name_kh:
+                                  type: string
+                                  description: Country’s name in Khmer
+                            foreign_address:
+                              type: string
+                              description: Foreign Address
+                            local_address:
+                              type: object
+                              description: 'Address in Cambodia '
+                              properties:
+                                province:
+                                  type: object
+                                  properties:
+                                    code:
+                                      type: string
+                                      description: Province’s code
+                                    name_en:
+                                      type: string
+                                      description: Province’s name in English
+                                    name_kh:
+                                      type: string
+                                      description: Province’s name in Khmer
+                                district:
+                                  type: object
+                                  properties:
+                                    code:
+                                      type: string
+                                      description: District’s code
+                                    name_en:
+                                      type: string
+                                      description: District’s name in English
+                                    name_kh:
+                                      type: string
+                                      description: District’s name in Khmer
+                                commune:
+                                  type: object
+                                  properties:
+                                    code:
+                                      type: string
+                                      description: Commune’s code
+                                    name_en:
+                                      type: string
+                                      description: Commune’s name in English
+                                    name_kh:
+                                      type: string
+                                      description: Commune’s name in Khmer
+                                village:
+                                  type: object
+                                  properties:
+                                    code:
+                                      type: string
+                                      description: Village’s code
+                                    name_en:
+                                      type: string
+                                      description: Village’s name in English
+                                    name_kh:
+                                      type: string
+                                      description: Village’s name in Khmer
+                                house:
+                                  type: string
+                                  description: House number
+                                street:
+                                  type: string
+                                  description: Street number
+                        board_director:
+                          type: boolean
+                          description: Is director a member of the board of director?
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      - last_name: string
+                        first_name: string
+                        last_name_en: string
+                        first_name_en: string
+                        gender: string
+                        date_of_birth: string
+                        identification_number: string
+                        expired_date: string
+                        issue_date: string
+                        mobile_phone_number: string
+                        telephone_number: string
+                        email_address: string
+                        nationality:
+                          code: string
+                          name_en: string
+                          name_kh: string
+                        photo_doc: string
+                        id_doc: string
+                        current_address:
+                          country:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          foreign_address: string
+                          local_address:
+                            province:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            district:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            commune:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            village:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            house: string
+                            street: string
+                        board_director: true
+      security:
+        - CamDigiKey-JWT: []
+      description: Get company director information
+      deprecated: true
+      tags:
+        - user
+      x-internal: true
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
+  '/r1/CAMBODIA/GOV/CAMDX-20201222/MOC/open-api/v1/companies/{single-id}/shareholder':
+    get:
+      summary: User - Company Shareholder Information
+      operationId: getCompanyShareholderInformation
+      parameters:
+        - schema:
+            type: string
+            default: CAMBODIA/GOV/CAMDX-20201222/OBR
+          in: header
+          name: X-Road-Client
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  example-1:
+                    code: 0
+                    message: string
+                    data:
+                      companies:
+                        - single_id: string
+                          company_name_en: string
+                          company_name_kh: string
+                      pagination:
+                        total_pages: 0
+                        total_counts: 0
+                        page: 0
+                        size: 0
+                properties:
+                  code:
+                    type: integer
+                    description: |-
+                      0: Successfully
+                      400: Not found
+                      500: Invalid access token
+                  message:
+                    type: string
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        last_name:
+                          type: string
+                          description: Shareholder’s last name in Khmer
+                        first_name:
+                          type: string
+                          description: Shareholder’s first name in Khmer
+                        last_name_en:
+                          type: string
+                          description: Shareholder’s last name in English
+                        first_name_en:
+                          type: string
+                          description: Shareholder’s first name in English
+                        gender:
+                          type: string
+                          description: Shareholder’s gender
+                        date_of_birth:
+                          type: string
+                          description: Shareholder’s birthday
+                        identification_number:
+                          type: string
+                          description: Shareholder’s identification number
+                        expired_date:
+                          type: string
+                          description: Shareholder’s identification expire date
+                        issue_date:
+                          type: string
+                          description: Shareholder’s identification issue date
+                        mobile_phone_number:
+                          type: string
+                          description: Shareholder’s mobile phone number
+                        telephone_number:
+                          type: string
+                          description: Shareholder’s telephone number
+                        email_address:
+                          type: string
+                          description: Shareholder’s email
+                        nationality:
+                          type: object
+                          description: Shareholder’s nationality
+                          properties:
+                            code:
+                              type: string
+                            name_en:
+                              type: string
+                            name_kh:
+                              type: string
+                        photo_doc:
+                          type: string
+                          description: Shareholder’s photo url
+                        id_doc:
+                          type: string
+                          description: Shareholder’s id card doc url
+                        current_address:
+                          type: object
+                          description: Shareholder’s current address
+                          properties:
+                            country:
+                              type: object
+                              description: Shareholder’s country
+                              properties:
+                                code:
+                                  type: string
+                                  description: 'Country’s code. 2 characters standard like: KH, EN'
+                                name_en:
+                                  type: string
+                                  description: Country’s name in English
+                                name_kh:
+                                  type: string
+                                  description: Country’s name in Khmer
+                            foreign_address:
+                              type: string
+                              description: Foreign Address
+                            local_address:
+                              type: object
+                              description: 'Address in Cambodia '
+                              properties:
+                                province:
+                                  type: object
+                                  properties:
+                                    code:
+                                      type: string
+                                      description: Province’s code
+                                    name_en:
+                                      type: string
+                                      description: Province’s name in English
+                                    name_kh:
+                                      type: string
+                                      description: Province’s name in Khmer
+                                district:
+                                  type: object
+                                  properties:
+                                    code:
+                                      type: string
+                                      description: District’s code
+                                    name_en:
+                                      type: string
+                                      description: District’s name in English
+                                    name_kh:
+                                      type: string
+                                      description: District’s name in Khmer
+                                commune:
+                                  type: object
+                                  properties:
+                                    code:
+                                      type: string
+                                      description: Commune’s code
+                                    name_en:
+                                      type: string
+                                      description: Commune’s name in English
+                                    name_kh:
+                                      type: string
+                                      description: Commune’s name in Khmer
+                                village:
+                                  type: object
+                                  properties:
+                                    code:
+                                      type: string
+                                      description: Village’s code
+                                    name_en:
+                                      type: string
+                                      description: Village’s name in English
+                                    name_kh:
+                                      type: string
+                                      description: Village’s name in Khmer
+                                house:
+                                  type: string
+                                  description: House number
+                                street:
+                                  type: string
+                                  description: Street number
+                        shareholder_type:
+                          type: string
+                          description: Is director a member of the board of director?
+                        number_of_share:
+                          type: integer
+                          description: Number of share
+                        legal_entity_registration_number:
+                          type: string
+                          description: Legal entity registration number
+                        legal_entity_tax_identitfication_number:
+                          type: string
+                          description: Legal entity tax identitfication number
+                        legal_entity_name_kh:
+                          type: string
+                          description: Legal entity name in Khmer
+                        legal_entity_name_en:
+                          type: string
+                          description: Legal entity name in English
+                        legal_entity_address:
+                          type: string
+                          description: Legal entity address
+                        list of representatives:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              last_name:
+                                type: string
+                                description: Representative’s last name in Khmer
+                              first_name:
+                                type: string
+                                description: Representative’s first name in Khmer
+                              last_name_en:
+                                type: string
+                                description: Representative’s last name in English
+                              first_name_en:
+                                type: string
+                                description: Representative’s first name in English
+                              gender:
+                                type: string
+                                description: Representative’s gender
+                              date_of_birth:
+                                type: string
+                                description: Representative’s birthday
+                              identification_number:
+                                type: string
+                                description: Representative’s identification number
+                              expired_date:
+                                type: string
+                                description: Representative’s identification expire date
+                              issue_date:
+                                type: string
+                                description: Representative’s identification issue date
+                              mobile_phone_number:
+                                type: string
+                                description: Representative’s mobile phone number
+                              telephone_number:
+                                type: string
+                                description: Representative’s telephone number
+                              email_address:
+                                type: string
+                                description: Representative’s email
+                              nationality:
+                                type: object
+                                description: Representative’s nationality
+                                properties:
+                                  code:
+                                    type: string
+                                  name_en:
+                                    type: string
+                                  name_kh:
+                                    type: string
+                              photo_doc:
+                                type: string
+                                description: Representative’s photo url
+                              id_doc:
+                                type: string
+                                description: Representative’s id card doc url
+                              current_address:
+                                type: object
+                                description: Representative’s current address
+                                properties:
+                                  country:
+                                    type: object
+                                    description: Representative’s country
+                                    properties:
+                                      code:
+                                        type: string
+                                        description: 'Country’s code. 2 characters standard like: KH, EN'
+                                      name_en:
+                                        type: string
+                                        description: Country’s name in English
+                                      name_kh:
+                                        type: string
+                                        description: Country’s name in Khmer
+                                  foreign_address:
+                                    type: string
+                                    description: Foreign Address
+                                  local_address:
+                                    type: object
+                                    description: 'Address in Cambodia '
+                                    properties:
+                                      province:
+                                        type: object
+                                        properties:
+                                          code:
+                                            type: string
+                                            description: Province’s code
+                                          name_en:
+                                            type: string
+                                            description: Province’s name in English
+                                          name_kh:
+                                            type: string
+                                            description: Province’s name in Khmer
+                                      district:
+                                        type: object
+                                        properties:
+                                          code:
+                                            type: string
+                                            description: District’s code
+                                          name_en:
+                                            type: string
+                                            description: District’s name in English
+                                          name_kh:
+                                            type: string
+                                            description: District’s name in Khmer
+                                      commune:
+                                        type: object
+                                        properties:
+                                          code:
+                                            type: string
+                                            description: Commune’s code
+                                          name_en:
+                                            type: string
+                                            description: Commune’s name in English
+                                          name_kh:
+                                            type: string
+                                            description: Commune’s name in Khmer
+                                      village:
+                                        type: object
+                                        properties:
+                                          code:
+                                            type: string
+                                            description: Village’s code
+                                          name_en:
+                                            type: string
+                                            description: Village’s name in English
+                                          name_kh:
+                                            type: string
+                                            description: Village’s name in Khmer
+                                      house:
+                                        type: string
+                                        description: House number
+                                      street:
+                                        type: string
+                                        description: Street number
+              examples:
+                example-1:
+                  value:
+                    code: 0
+                    message: string
+                    data:
+                      - last_name: string
+                        first_name: string
+                        last_name_en: string
+                        first_name_en: string
+                        gender: string
+                        date_of_birth: string
+                        identification_number: string
+                        expired_date: string
+                        issue_date: string
+                        mobile_phone_number: string
+                        telephone_number: string
+                        email_address: string
+                        nationality:
+                          code: string
+                          name_en: string
+                          name_kh: string
+                        photo_doc: string
+                        id_doc: string
+                        current_address:
+                          country:
+                            code: string
+                            name_en: string
+                            name_kh: string
+                          foreign_address: string
+                          local_address:
+                            province:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            district:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            commune:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            village:
+                              code: string
+                              name_en: string
+                              name_kh: string
+                            house: string
+                            street: string
+                        board_director: true
+      security:
+        - CamDigiKey-JWT: []
+      description: Get company shareholder information
+      deprecated: true
+      tags:
+        - user
+      x-internal: true
+    parameters:
+      - schema:
+          type: string
+        name: single-id
+        in: path
+        required: true
+        description: Single ID
