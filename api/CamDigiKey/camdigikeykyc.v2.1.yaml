@@ -62,7 +62,9 @@ components:
       schema:
         type: string
         example: CAMBODIA/GOV/CAMDX-20201234/SUBSYTEM_CODE
-      description: X-Road-Client Request Header
+      description: |
+        X-Road-Client Request Header 
+        * Example: `CAMBODIA/GOV/CAMDX-20201234/SUBSYTEM_CODE`
     MemberCode:
       name: member_code
       in: path
